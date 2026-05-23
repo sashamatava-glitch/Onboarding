@@ -5,291 +5,235 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Onboarding Hub ZA</title>
     
-    <!-- PWA Meta Tags -->
+    <!-- PWA Meta Tags for Android Installation -->
     <meta name="theme-color" content="#0d0f14">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- EmailJS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-
+    
     <style>
         :root {
-            --bg: #0d0f14;
-            --surface: #161a22;
-            --border: #2a2f3d;
-            --text-main: #e1e1e6;
-            --text-dim: #8d8d99;
-            --primary: #00c896;
-            --blue: #0094ff;
-            --orange: #ff7c3e;
-            --red: #ff4d6d;
-            --whatsapp: #25d366;
+            --bg-color: #0d0f14;
+            --surface-color: #161a22;
+            --border-color: #2a2f3d;
+            --text-main: #ffffff;
+            --text-muted: #8a94a6;
+            
+            /* Stage and Accent Colors */
+            --accent-primary: #00c896;
+            --accent-blue: #0094ff;
+            --accent-orange: #ff7c3e;
+            --accent-red: #ff4d6d;
+            --accent-yellow: #f5c842;
+            --whatsapp-green: #25d366;
+            
             --sidebar-width: 260px;
             --panel-width: 500px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body {
-            background-color: var(--bg);
-            color: var(--text-main);
             font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             overflow-x: hidden;
-            line-height: 1.5;
-            user-select: none; /* Prevents accidental text selection on mobile */
+            height: 100vh;
+            display: flex;
         }
 
-        h1, h2, h3, .heading-font { font-family: 'Syne', sans-serif; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
 
-        /* App Layout */
-        .app-container { display: flex; min-height: 100vh; }
+        h1, h2, h3, h4 { font-family: 'Syne', sans-serif; font-weight: 700; }
 
-        /* Sidebar - Hidden on mobile by default */
-        aside {
+        /* Sidebar */
+        #sidebar {
             width: var(--sidebar-width);
-            background: var(--surface);
-            border-right: 1px solid var(--border);
+            background-color: var(--surface-color);
+            border-right: 1px solid var(--border-color);
             height: 100vh;
             position: fixed;
-            display: flex;
-            flex-direction: column;
+            left: 0; top: 0;
+            display: flex; flex-direction: column;
             z-index: 1000;
-            transition: transform var(--transition);
+            transition: transform 0.3s ease;
         }
 
-        /* Main Content */
-        main {
-            flex: 1;
+        #main-content {
             margin-left: var(--sidebar-width);
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
+            width: calc(100% - var(--sidebar-width));
+            min-height: 100vh;
+            display: flex; flex-direction: column;
         }
 
-        header {
-            height: 70px;
-            background: rgba(13, 15, 20, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 90;
+        #topbar {
+            height: 60px;
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky; top: 0;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 24px;
+            z-index: 900;
         }
+
+        .view-container { padding: 24px; flex: 1; display: none; overflow-y: auto; }
+        .view-container.active { display: block; }
+
+        /* Sidebar Elements */
+        .sidebar-brand { padding: 24px; border-bottom: 1px solid var(--border-color); }
+        .sidebar-brand span { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar-menu { list-style: none; padding: 16px 8px; }
+        .sidebar-item { padding: 12px 16px; border-radius: 6px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+        .sidebar-item.active { background-color: var(--border-color); color: var(--text-main); border-left: 3px solid var(--accent-primary); }
 
         /* Buttons */
-        .btn {
-            padding: 12px 20px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-family: 'DM Sans', sans-serif;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: 0.2s;
-        }
-        .btn-primary { background: var(--primary); color: #000; }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: #fff; }
-        .btn-whatsapp { background: var(--whatsapp); color: #fff; width: 100%; }
-        .btn-email { background: var(--blue); color: #fff; width: 100%; }
+        .btn { border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: inherit; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-primary { background-color: var(--accent-primary); color: #000; }
+        .btn-whatsapp { background-color: var(--whatsapp-green); color: #000; width: 100%; justify-content: center; }
+        .btn-email { background-color: var(--accent-blue); color: #fff; width: 100%; justify-content: center; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .content-body { padding: 20px; width: 100%; }
+        /* Dashboard Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card { background-color: var(--surface-color); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; }
+        .stat-card .value { font-size: 2rem; font-family: 'Syne'; }
 
-        /* Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 16px;
-            border-radius: 12px;
-        }
-        .stat-value { font-size: 1.5rem; font-weight: 700; font-family: 'Syne'; color: var(--primary); }
+        /* Kanban */
+        .kanban-board { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 16px; height: calc(100vh - 140px); }
+        .kanban-column { flex: 0 0 280px; background-color: var(--surface-color); border-radius: 8px; display: flex; flex-direction: column; border: 1px solid var(--border-color); }
+        .kanban-cards { padding: 12px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .kanban-card { background-color: var(--bg-color); border: 1px solid var(--border-color); padding: 12px; border-radius: 6px; cursor: pointer; }
 
-        /* Detail Panel */
-        .detail-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.8);
-            z-index: 2000;
-            display: none;
+        /* Slide-In Panel */
+        #detail-panel {
+            position: fixed; top: 0; right: -100%; width: var(--panel-width); height: 100vh;
+            background-color: var(--surface-color); border-left: 1px solid var(--border-color);
+            z-index: 2000; transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex; flex-direction: column;
         }
-        .detail-panel {
-            position: fixed;
-            right: -100%;
-            top: 0;
-            width: var(--panel-width);
-            height: 100vh;
-            background: var(--surface);
-            z-index: 2001;
-            transition: right var(--transition);
-            display: flex;
-            flex-direction: column;
-        }
-        .detail-panel.active { right: 0; }
-
-        /* Modals */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.9);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 3000;
-            padding: 15px;
-        }
-        .modal {
-            background: var(--surface);
-            width: 100%;
-            max-width: 500px;
-            border-radius: 16px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .modal-body { padding: 24px; }
+        #detail-panel.open { right: 0; }
+        .panel-body { padding: 20px; overflow-y: auto; flex: 1; }
 
         /* FICA Block */
-        .fica-block {
-            border: 1px solid var(--red);
-            padding: 12px;
-            border-radius: 8px;
-            background: rgba(255, 77, 109, 0.05);
-            font-size: 0.75rem;
-            margin: 15px 0;
-            color: #ffb3c1;
-        }
+        .fica-container { border: 1px solid var(--accent-red); background: rgba(255, 77, 109, 0.05); padding: 14px; border-radius: 6px; margin-top: 20px; font-size: 0.8rem; color: #ffcbd4; }
 
-        /* Stepper */
-        .step { display: flex; gap: 12px; margin-bottom: 20px; }
-        .step-circle { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
-        .step.completed .step-circle { background: var(--primary); color: #000; border-color: var(--primary); }
-        .quote-box { background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; font-size: 0.8rem; margin-top: 5px; font-style: italic; }
+        /* Toasts */
+        #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+        .toast { background: #1e2430; border-left: 4px solid var(--accent-blue); color: #fff; padding: 12px 20px; border-radius: 4px; animation: slideIn 0.2s ease; }
 
-        /* Toast */
-        #toast-container { position: fixed; bottom: 20px; left: 20px; right: 20px; z-index: 9999; }
-        .toast { background: #fff; color: #000; padding: 16px; border-radius: 8px; margin-top: 8px; font-weight: 600; text-align: center; }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
 
         /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            aside { transform: translateX(-100%); }
-            aside.mobile-open { transform: translateX(0); }
-            main { margin-left: 0; }
-            .detail-panel { width: 100%; }
-            .sidebar-toggle { display: block; }
-        }
-
-        /* Helper Classes */
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 0.8rem; color: var(--text-dim); margin-bottom: 5px; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; background: #0d0f14; border: 1px solid var(--border); padding: 12px; border-radius: 8px; color: #fff; font-size: 1rem;
+        @media (max-width: 850px) {
+            #sidebar { transform: translateX(-100%); }
+            #sidebar.mobile-open { transform: translateX(0); }
+            #main-content { margin-left: 0; width: 100%; }
+            #detail-panel { width: 100%; }
+            .mobile-toggle { display: block !important; }
         }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- Sidebar -->
-        <aside id="sidebar">
-            <div style="padding: 24px; font-weight: 800; color: var(--primary); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between;">
-                Onboarding Hub
-                <span onclick="toggleSidebar()" style="cursor:pointer">✕</span>
-            </div>
-            <div style="padding: 10px; flex: 1;">
-                <div class="nav-item" onclick="switchView('dashboard'); toggleSidebar()">Dashboard</div>
-                <div class="nav-item" onclick="switchView('pipeline'); toggleSidebar()">Pipeline</div>
-                <div class="nav-item" onclick="switchView('all'); toggleSidebar()">All Drivers</div>
-            </div>
-            <div style="padding: 20px; border-top: 1px solid var(--border);">
-                <button class="btn btn-outline" style="width:100%" onclick="openModal('settingsModal')">Settings</button>
-            </div>
-        </aside>
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <div class="sidebar-brand">
+            <h2>OnboardingHub ZA</h2>
+            <span>Waardeer Holdings</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="sidebar-item active" onclick="switchView('dashboard')">📈 Dashboard</li>
+            <li class="sidebar-item" onclick="switchView('pipeline')">📋 Pipeline Kanban</li>
+            <li class="sidebar-item" onclick="switchView('all-drivers')">👥 All Drivers List</li>
+        </ul>
+        <div style="margin-top: auto; padding: 16px;">
+            <button class="btn btn-outline" style="width:100%; color: #fff; border: 1px solid var(--border-color);" onclick="openEmailJsModal()">⚙️ Settings</button>
+        </div>
+    </div>
 
-        <main>
-            <header>
-                <div style="display:flex; align-items:center; gap:12px">
-                    <button class="btn btn-outline" onclick="toggleSidebar()" style="padding:8px">☰</button>
-                    <h3 id="view-title">Dashboard</h3>
+    <div id="main-content">
+        <div id="topbar">
+            <button class="btn mobile-toggle" style="display:none; background: transparent; color: #fff; font-size: 20px;" onclick="toggleMobileSidebar()">☰</button>
+            <h2 id="view-title">Dashboard</h2>
+            <button class="btn btn-primary" onclick="openAssignModal()">+ Assign</button>
+        </div>
+
+        <div id="view-dashboard" class="view-container active">
+            <div class="stats-grid">
+                <div class="stat-card"><h3>Active</h3><div class="value" id="stat-active">0</div></div>
+                <div class="stat-card"><h3>Completed</h3><div class="value" id="stat-completed">0</div></div>
+                <div class="stat-card"><h3>Notifs</h3><div class="value" id="stat-notifs">0</div></div>
+            </div>
+            <h3 style="margin-bottom:15px">Recent Activity</h3>
+            <div id="recent-drivers-list"></div>
+        </div>
+
+        <div id="view-pipeline" class="view-container">
+            <div class="kanban-board" id="kanban-container"></div>
+        </div>
+
+        <div id="view-all-drivers" class="view-container">
+            <div id="all-drivers-table"></div>
+        </div>
+    </div>
+
+    <!-- Detail Panel -->
+    <div id="detail-panel">
+        <div style="padding:20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
+            <h3 id="panel-driver-name">Driver Profile</h3>
+            <button class="btn" style="background:transparent; color:#fff" onclick="closeDetailPanel()">✕</button>
+        </div>
+        <div class="panel-body">
+            <div id="visual-stepper"></div>
+            <div style="margin-top:20px">
+                <button class="btn btn-whatsapp" onclick="dispatchWhatsApp()">Send WhatsApp</button>
+                <button class="btn btn-email" style="margin-top:10px" onclick="dispatchEmailAutomatically()">Send Auto Email</button>
+            </div>
+            <div style="margin-top:30px">
+                <h4>System Logs</h4>
+                <div id="comments-thread" style="margin-top:10px"></div>
+            </div>
+        </div>
+        <div style="padding:20px; border-top:1px solid var(--border-color); display:flex; gap:10px">
+            <button class="btn btn-primary" style="flex:1" onclick="advanceActiveDriverStage()">Advance</button>
+            <button class="btn" style="flex:1" onclick="markActiveDriverComplete()">Complete</button>
+        </div>
+    </div>
+
+    <!-- Modal: Assign -->
+    <div class="modal-overlay" id="modal-assign" style="position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:3000; display:none; align-items:center; justify-content:center; padding:20px;">
+        <div style="background:var(--surface-color); width:100%; max-width:500px; border-radius:12px; padding:24px; max-height:90vh; overflow-y:auto;">
+            <h3>Assign New Driver</h3>
+            <div style="margin-top:20px">
+                <input type="text" id="form-name" placeholder="Full Name" style="width:100%; padding:12px; background:var(--bg-color); border:1px solid var(--border-color); color:#fff; border-radius:6px; margin-bottom:12px;">
+                <input type="text" id="form-whatsapp" placeholder="WhatsApp Number" style="width:100%; padding:12px; background:var(--bg-color); border:1px solid var(--border-color); color:#fff; border-radius:6px; margin-bottom:12px;">
+                <input type="email" id="form-email" placeholder="Email Address" style="width:100%; padding:12px; background:var(--bg-color); border:1px solid var(--border-color); color:#fff; border-radius:6px; margin-bottom:12px;">
+                
+                <div class="fica-container">
+                    I confirm all information provided is true and accurate per SA FICA standards. Providing false information is a criminal offense.
                 </div>
-                <button class="btn btn-primary" onclick="openModal('addDriverModal')">+</button>
-            </header>
-
-            <div class="content-body" id="main-content"></div>
-        </main>
-    </div>
-
-    <!-- Modals & Detail Panel (Reused from previous version) -->
-    <div class="detail-overlay" id="detailOverlay" onclick="closeDetail()"></div>
-    <div class="detail-panel" id="detailPanel">
-        <div style="padding:20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-            <h3 id="panelName"></h3>
-            <button onclick="closeDetail()" style="background:none; border:none; color:#fff; font-size:24px;">✕</button>
-        </div>
-        <div id="panelBody" style="padding:20px; flex:1; overflow-y:auto;"></div>
-        <div id="panelFooter" style="padding:20px; border-top:1px solid var(--border); display:flex; gap:10px;"></div>
-    </div>
-
-    <!-- Modal: Add Driver -->
-    <div class="modal-overlay" id="addDriverModal">
-        <div class="modal">
-            <div class="modal-body">
-                <h3 style="margin-bottom:20px">New Driver</h3>
-                <form id="driverForm">
-                    <div class="form-group"><label>Full Name</label><input type="text" id="df-name" required></div>
-                    <div class="form-group"><label>SA ID Number</label><input type="number" id="df-id" required></div>
-                    <div class="form-group"><label>WhatsApp Number</label><input type="tel" id="df-wa" placeholder="0821234567" required></div>
-                    <div class="form-group"><label>Email Address</label><input type="email" id="df-email" required></div>
-                    <div class="form-group">
-                        <label>Vehicle</label>
-                        <select id="df-vehicle"><option>Motorbike</option><option>Car</option></select>
-                    </div>
-                    
-                    <div class="fica-block">
-                        I confirm all info is true and accurate per SA FICA standards. Providing false info is a criminal offense.
-                    </div>
-                    <label style="display:flex; gap:10px; font-size:0.8rem; margin-bottom:20px">
-                        <input type="checkbox" id="ficaCheck" onchange="document.getElementById('submitBtn').disabled = !this.checked"> 
-                        I agree to the FICA declaration.
-                    </label>
-
-                    <div style="display:flex; gap:10px">
-                        <button type="button" class="btn btn-outline" style="flex:1" onclick="closeModal('addDriverModal')">Cancel</button>
-                        <button type="submit" id="submitBtn" class="btn btn-primary" style="flex:1" disabled>Assign</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Settings -->
-    <div class="modal-overlay" id="settingsModal">
-        <div class="modal">
-            <div class="modal-body">
-                <h3 style="margin-bottom:20px">EmailJS Setup</h3>
-                <div class="form-group"><label>Public Key</label><input type="text" id="set-pk"></div>
-                <div class="form-group"><label>Service ID</label><input type="text" id="set-sid"></div>
-                <div class="form-group"><label>Template ID</label><input type="text" id="set-tid"></div>
-                <button class="btn btn-primary" style="width:100%" onclick="saveSettings()">Save</button>
-                <button class="btn btn-outline" style="width:100%; margin-top:10px;" onclick="closeModal('settingsModal')">Close</button>
+                <label style="display:flex; gap:10px; margin-top:15px; font-size:0.8rem">
+                    <input type="checkbox" id="form-fica-agree" onchange="document.getElementById('btn-submit-driver').disabled = !this.checked">
+                    Driver agrees to FICA Declaration.
+                </label>
+                
+                <div style="display:flex; gap:10px; margin-top:20px">
+                    <button class="btn" style="flex:1" onclick="closeAssignModal()">Cancel</button>
+                    <button class="btn btn-primary" id="btn-submit-driver" style="flex:1" disabled onclick="submitDriverForm()">Inject Profile</button>
+                </div>
             </div>
         </div>
     </div>
@@ -297,145 +241,143 @@
     <div id="toast-container"></div>
 
     <script>
-        // --- PWA Service Worker Registration ---
+        // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then(() => {
-                    console.log('Service Worker Registered');
-                });
+                navigator.serviceWorker.register('sw.js').then(reg => console.log('SW Registered'));
             });
         }
 
-        // --- Logic ---
         const STAGES = [
-            { name: "Identity", color: "#ff4d6d", msg: "Verifying your documents." },
-            { name: "Screening", color: "#ff7c3e", msg: "Please complete fingerprint check." },
-            { name: "Gear", color: "#f5c842", msg: "Authorized to buy delivery bag." },
-            { name: "Review", color: "#0094ff", msg: "Activating your profile." },
-            { name: "Active", color: "#00c896", msg: "Account is ACTIVE!" }
+            { name: "Identity & Selfie", color: "#ff4d6d", msg: "Verifying your documents." },
+            { name: "Background Check", color: "#ff7c3e", msg: "Please complete fingerprints." },
+            { name: "Gear Selection", color: "#f5c842", msg: "Buy your delivery bag now." },
+            { name: "Final Review", color: "#0094ff", msg: "Activating your profile." },
+            { name: "Account Active", color: "#00c896", msg: "Account is ACTIVE!" }
         ];
 
-        let drivers = JSON.parse(localStorage.getItem('ob_drivers_za')) || [];
-        let settings = JSON.parse(localStorage.getItem('ob_settings_za')) || { pk: '', sid: '', tid: '' };
+        let drivers = JSON.parse(localStorage.getItem('oh_drivers')) || [];
+        let activeDriverId = null;
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('mobile-open'); }
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function showToast(msg) {
-            const t = document.createElement('div'); t.className = 'toast'; t.innerText = msg;
+        function showToast(text) {
+            const t = document.createElement('div'); t.className = 'toast'; t.textContent = text;
             document.getElementById('toast-container').appendChild(t);
             setTimeout(() => t.remove(), 3000);
         }
 
-        document.getElementById('driverForm').onsubmit = (e) => {
-            e.preventDefault();
+        function switchView(view) {
+            document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+            document.getElementById(`view-${view}`).classList.add('active');
+            document.getElementById('view-title').textContent = view.toUpperCase();
+            document.getElementById('sidebar').classList.remove('mobile-open');
+            if(view === 'dashboard') renderDashboard();
+            if(view === 'pipeline') renderPipeline();
+            if(view === 'all-drivers') renderAllDrivers();
+        }
+
+        function toggleMobileSidebar() { document.getElementById('sidebar').classList.toggle('mobile-open'); }
+        function openAssignModal() { document.getElementById('modal-assign').style.display = 'flex'; }
+        function closeAssignModal() { document.getElementById('modal-assign').style.display = 'none'; }
+
+        function submitDriverForm() {
             const d = {
-                id: Date.now(),
-                name: document.getElementById('df-name').value,
-                idNum: document.getElementById('df-id').value,
-                whatsapp: document.getElementById('df-wa').value,
-                email: document.getElementById('df-email').value,
-                vehicle: document.getElementById('df-vehicle').value,
+                id: 'drv_' + Date.now(),
+                name: document.getElementById('form-name').value,
+                whatsapp: document.getElementById('form-whatsapp').value,
+                email: document.getElementById('form-email').value,
                 stage: 0,
                 completed: false,
+                created: Date.now(),
                 comments: []
             };
             drivers.push(d);
-            localStorage.setItem('ob_drivers_za', JSON.stringify(drivers));
-            closeModal('addDriverModal');
+            localStorage.setItem('oh_drivers', JSON.stringify(drivers));
+            closeAssignModal();
             showToast("Driver Added");
             switchView('dashboard');
-        };
-
-        function switchView(view) {
-            const container = document.getElementById('main-content');
-            document.getElementById('view-title').innerText = view.toUpperCase();
-            
-            if(view === 'dashboard') {
-                const active = drivers.filter(x => !x.completed).length;
-                container.innerHTML = `
-                    <div class="stats-grid">
-                        <div class="stat-card"><div class="stat-value">${active}</div><div style="font-size:0.7rem">Active</div></div>
-                        <div class="stat-card"><div class="stat-value">${drivers.length - active}</div><div style="font-size:0.7rem">Completed</div></div>
-                    </div>
-                    <h4>Recent Drivers</h4>
-                    <div id="list-target"></div>
-                `;
-                renderList(drivers.slice(-10), document.getElementById('list-target'));
-            } else {
-                container.innerHTML = `<div id="list-target"></div>`;
-                renderList(drivers, document.getElementById('list-target'));
-            }
         }
 
-        function renderList(arr, target) {
-            target.innerHTML = arr.map(d => `
-                <div onclick="openDetail(${d.id})" style="background:var(--surface); padding:15px; border-radius:10px; margin-top:10px; border-left:4px solid ${STAGES[d.stage].color}">
-                    <div style="font-weight:700">${d.name}</div>
-                    <div style="font-size:0.8rem; color:var(--text-dim)">${STAGES[d.stage].name} • ${d.vehicle}</div>
+        function renderDashboard() {
+            document.getElementById('stat-active').textContent = drivers.filter(d => !d.completed).length;
+            document.getElementById('stat-completed').textContent = drivers.filter(d => d.completed).length;
+            const list = document.getElementById('recent-drivers-list');
+            list.innerHTML = drivers.slice(-5).map(d => `
+                <div onclick="openDetailPanel('${d.id}')" style="background:var(--surface-color); padding:15px; border-radius:8px; margin-bottom:10px; border-left:4px solid ${STAGES[d.stage].color}">
+                    <b>${d.name}</b><br><small>${STAGES[d.stage].name}</small>
                 </div>
             `).join('');
         }
 
-        function openDetail(id) {
-            const d = drivers.find(x => x.id === id);
-            document.getElementById('panelName').innerText = d.name;
-            const body = document.getElementById('panelBody');
-            
-            body.innerHTML = `
-                <div style="margin-bottom:20px; font-size:0.9rem">
-                    <div><b>ID:</b> ${d.idNum}</div>
-                    <div><b>WA:</b> ${d.whatsapp}</div>
-                </div>
-                ${STAGES.map((s, i) => `
-                    <div class="step ${i <= d.stage ? 'completed' : ''}">
-                        <div class="step-circle">${i < d.stage ? '✓' : i+1}</div>
-                        <div>
-                            <div style="font-weight:700">${s.name}</div>
-                            ${i === d.stage ? `<div class="quote-box">${s.msg}</div>` : ''}
-                        </div>
+        function renderPipeline() {
+            const container = document.getElementById('kanban-container');
+            container.innerHTML = STAGES.map((s, i) => `
+                <div class="kanban-column">
+                    <div style="padding:15px; border-bottom:1px solid var(--border-color); color:${s.color}"><b>${s.name}</b></div>
+                    <div class="kanban-cards">
+                        ${drivers.filter(d => d.stage === i && !d.completed).map(d => `
+                            <div class="kanban-card" onclick="openDetailPanel('${d.id}')">${d.name}</div>
+                        `).join('')}
                     </div>
-                `).join('')}
-                <button class="btn btn-whatsapp" onclick="sendWA('${d.whatsapp}', '${d.name}', ${d.stage})">Send WhatsApp</button>
-            `;
-
-            document.getElementById('panelFooter').innerHTML = `
-                <button class="btn btn-primary" style="flex:1" onclick="advance(${d.id})">Next Stage</button>
-            `;
-            
-            document.getElementById('detailOverlay').style.display = 'block';
-            document.getElementById('detailPanel').classList.add('active');
+                </div>
+            `).join('');
         }
 
-        function closeDetail() {
-            document.getElementById('detailOverlay').style.display = 'none';
-            document.getElementById('detailPanel').classList.remove('active');
+        function renderAllDrivers() {
+            document.getElementById('all-drivers-table').innerHTML = drivers.map(d => `
+                <div onclick="openDetailPanel('${d.id}')" style="background:var(--surface-color); padding:15px; margin-bottom:8px; border-radius:8px">
+                    <b>${d.name}</b> - ${d.completed ? '✅ Done' : STAGES[d.stage].name}
+                </div>
+            `).join('');
         }
 
-        function advance(id) {
-            const i = drivers.findIndex(x => x.id === id);
-            if(drivers[i].stage < 4) drivers[i].stage++;
-            else drivers[i].completed = true;
-            localStorage.setItem('ob_drivers_za', JSON.stringify(drivers));
-            closeDetail();
-            switchView('dashboard');
-            showToast("Stage Updated");
+        function openDetailPanel(id) {
+            activeDriverId = id;
+            const d = drivers.find(x => x.id === id);
+            document.getElementById('panel-driver-name').textContent = d.name;
+            document.getElementById('visual-stepper').innerHTML = STAGES.map((s, i) => `
+                <div style="margin-bottom:10px; color:${i <= d.stage ? s.color : '#555'}">
+                    ${i < d.stage ? '✓' : i+1}. ${s.name}
+                </div>
+            `).join('');
+            document.getElementById('detail-panel').classList.add('open');
         }
 
-        function sendWA(num, name, stage) {
-            const cleanNum = num.startsWith('0') ? '27' + num.substring(1) : num;
-            const msg = encodeURIComponent(`Hi ${name}, ${STAGES[stage].msg}`);
-            window.open(`https://wa.me/${cleanNum}?text=${msg}`);
+        function closeDetailPanel() { document.getElementById('detail-panel').classList.remove('open'); }
+
+        function advanceActiveDriverStage() {
+            const d = drivers.find(x => x.id === activeDriverId);
+            if(d.stage < 4) d.stage++;
+            localStorage.setItem('oh_drivers', JSON.stringify(drivers));
+            openDetailPanel(activeDriverId);
+            showToast("Stage Advanced");
+            refreshViews();
         }
 
-        function saveSettings() {
-            settings = { pk: document.getElementById('set-pk').value, sid: document.getElementById('set-sid').value, tid: document.getElementById('set-tid').value };
-            localStorage.setItem('ob_settings_za', JSON.stringify(settings));
-            showToast("Settings Saved");
-            closeModal('settingsModal');
+        function markActiveDriverComplete() {
+            const d = drivers.find(x => x.id === activeDriverId);
+            d.completed = true;
+            localStorage.setItem('oh_drivers', JSON.stringify(drivers));
+            closeDetailPanel();
+            showToast("Completed");
+            refreshViews();
         }
 
+        function refreshViews() {
+            renderDashboard();
+            renderPipeline();
+            renderAllDrivers();
+        }
+
+        function dispatchWhatsApp() {
+            const d = drivers.find(x => x.id === activeDriverId);
+            let num = d.whatsapp.startsWith('0') ? '27' + d.whatsapp.substring(1) : d.whatsapp;
+            const msg = encodeURIComponent(`Hi ${d.name}, ${STAGES[d.stage].msg}`);
+            window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
+        }
+
+        window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDetailPanel(); });
+        
         switchView('dashboard');
     </script>
 </body>
-</html>
+    </html>
