@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Onboarding Hub ZA | Waardeer Holdings</title>
     
+    <!-- PWA & Apple Support -->
     <meta name="theme-color" content="#0d0f14">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -24,46 +25,56 @@
             --sidebar-w: 260px;
         }
 
-        /* Themes */
+        /* Theme Support */
         body.theme-midnight { --bg: #000000; --surface: #111111; --border: #222222; }
         body.theme-navy { --bg: #0a192f; --surface: #112240; --border: #233554; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: background 0.3s; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: 0.3s; }
         
+        /* Login */
         #login-screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 30px; }
         .login-card { background: var(--surface); padding: 40px; border-radius: 24px; border: 1px solid var(--border); width: 100%; max-width: 400px; text-align: center; }
 
+        /* Sidebar */
         #sidebar { width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; transition: 0.3s; z-index: 1000; }
         .sidebar-brand { padding: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; cursor: pointer; }
-        
         .nav-item { padding: 12px 20px; cursor: pointer; color: var(--dim); border-radius: 8px; margin: 4px 10px; font-weight: 500; font-size: 0.9rem; transition: 0.2s; }
         .nav-item.active { background: var(--border); color: #fff; border-left: 3px solid var(--primary); }
 
+        /* Main View */
         #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
         #topbar { height: 64px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
         .view { padding: 20px; flex: 1; overflow-y: auto; display: none; }
         .view.active { display: block; }
 
+        /* Cards & Stats */
         .stat-card { background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid var(--border); }
         .stat-card h4 { font-size: 0.7rem; color: var(--dim); text-transform: uppercase; margin-bottom: 5px; }
         .stat-card .val { font-size: 1.8rem; font-weight: 800; font-family: 'Syne'; color: var(--primary); }
-
         .task-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 15px; }
-        .driver-img-sm { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+        .driver-img-sm { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); background: #000; }
 
-        #panel { position: fixed; top: 0; right: -100%; width: 500px; height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 2000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; }
+        /* Detail Panel */
+        #panel { position: fixed; top: 0; right: -100%; width: 500px; height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 2000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
         #panel.open { right: 0; }
         .panel-content { padding: 25px; overflow-y: auto; flex: 1; }
+        .panel-footer { padding: 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: var(--surface); }
 
+        /* Forms */
         .form-control { width: 100%; padding: 14px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 10px; margin-bottom: 12px; font-family: inherit; font-size: 1rem; }
         .btn { padding: 12px 18px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; }
         .btn-primary { background: var(--primary); color: #000; }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: #fff; }
+        .btn-whatsapp { background: var(--whatsapp); color: #fff; width: 100%; margin-top: 10px; }
+        .btn-danger { background: rgba(255, 77, 109, 0.1); color: var(--red); border: 1px solid var(--red); width: 100%; margin-top: 20px; }
 
-        .revenue-pill { font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
-        .pill-rent { background: var(--orange); color: #000; }
-        .pill-cash { background: var(--blue); color: #fff; }
+        /* T&C Box */
+        .terms-box { background: #000; border: 1px solid var(--border); padding: 15px; border-radius: 10px; height: 150px; overflow-y: auto; font-size: 0.75rem; color: var(--dim); margin-bottom: 15px; line-height: 1.4; }
+
+        /* Pipeline */
+        .pipe-row { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px; }
+        .pipe-col { min-width: 280px; background: rgba(255,255,255,0.02); border-radius: 15px; padding: 15px; height: fit-content; }
 
         @media (max-width: 850px) {
             #sidebar { position: fixed; height: 100vh; transform: translateX(-100%); }
@@ -74,12 +85,12 @@
 </head>
 <body class="theme-default">
 
-    <!-- LOGIN -->
+    <!-- LOGIN SCREEN -->
     <div id="login-screen">
         <div class="login-card">
             <img src="logo.png" style="width:100px; height:100px; border-radius:50%; margin-bottom:20px;">
             <h2 style="font-family:'Syne';">ONBOARDING HUB</h2>
-            <p style="color:var(--dim); font-size:0.7rem; margin-bottom:25px;">WAARDEER HOLDINGS OPERATIONS</p>
+            <p style="color:var(--dim); font-size:0.7rem; margin-bottom:25px;">WAARDEER HOLDINGS OPS</p>
             <input type="password" id="pass-input" class="form-control" placeholder="Master Password" style="text-align:center;">
             <button class="btn btn-primary" style="width:100%;" onclick="handleAuth()">Access System</button>
         </div>
@@ -94,7 +105,7 @@
         <div style="padding-top: 15px; flex: 1;">
             <div id="nav-dashboard" class="nav-item active" onclick="switchView('dashboard')">📈 Dashboard</div>
             <div id="nav-pipeline" class="nav-item" onclick="switchView('pipeline')">📋 Pipeline Board</div>
-            <div id="nav-revenue" class="nav-item" onclick="switchView('revenue')">💰 Revenue Tracking</div>
+            <div id="nav-revenue" class="nav-item" onclick="switchView('revenue')">💰 Revenue Tracker</div>
             <div id="nav-tasks" class="nav-item" onclick="switchView('tasks')">✅ Ops Delegation</div>
             <div id="nav-all" class="nav-item" onclick="switchView('all')">👥 Driver Index</div>
             <div id="nav-settings" class="nav-item" onclick="switchView('settings')">⚙️ Settings</div>
@@ -104,213 +115,67 @@
     <div id="main">
         <div id="topbar">
             <button class="btn" style="background:transparent; color:#fff; font-size:24px;" onclick="document.getElementById('sidebar').classList.toggle('mobile-open')">☰</button>
-            <h3 id="view-title">Dashboard</h3>
+            <h3 id="view-title">DASHBOARD</h3>
             <button class="btn btn-primary" onclick="openModal('modal-add')">Assign +</button>
         </div>
 
-        <!-- Dashboard -->
+        <!-- Dashboard View -->
         <div id="view-dashboard" class="view active">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:25px;">
                 <div class="stat-card"><h4>ACTIVE FLEET</h4><div class="val" id="stat-active">0</div></div>
-                <div class="stat-card"><h4>SALES REVENUE</h4><div class="val" id="stat-rev">R0</div></div>
+                <div class="stat-card"><h4>PROJECTED REV</h4><div class="val" id="stat-rev">R0</div></div>
             </div>
-            <h4 style="margin-bottom:15px; font-family:'Syne'">Recently Added</h4>
+            <h4 style="margin-bottom:15px; font-family:'Syne'">Recently Added Drivers</h4>
             <div id="recent-list"></div>
         </div>
 
         <!-- Revenue View -->
         <div id="view-revenue" class="view">
-            <div class="stat-card" style="margin-bottom:20px;">
-                <h4>Total Projected Revenue</h4>
+            <div class="stat-card" style="margin-bottom:25px;">
+                <h4>Total Sales Revenue</h4>
                 <div class="val" id="rev-total-large" style="font-size:2.5rem;">R0</div>
             </div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:25px;">
-                <div class="stat-card" style="border-left:4px solid var(--orange)"><h4>Rent-to-Own (R4k)</h4><div class="val" id="rev-rent-count">0</div></div>
-                <div class="stat-card" style="border-left:4px solid var(--blue)"><h4>Cash Deals (R2.5k)</h4><div class="val" id="rev-cash-count">0</div></div>
+                <div class="stat-card"><h4>Rent-to-Own (R4k)</h4><div class="val" id="count-rent">0</div></div>
+                <div class="stat-card"><h4>Cash Deal (R2.5k)</h4><div class="val" id="count-cash">0</div></div>
             </div>
-            <h4>Revenue Log</h4>
-            <div id="rev-list" style="margin-top:15px;"></div>
+            <div id="revenue-log"></div>
         </div>
+
+        <!-- Delegation View -->
+        <div id="view-tasks" class="view">
+            <div style="background:var(--surface); padding:20px; border-radius:15px; margin-bottom:20px; border:1px solid var(--border);">
+                <h4 style="margin-bottom:15px;">New Ops Task</h4>
+                <input type="text" id="t-text" class="form-control" placeholder="Task description">
+                <input type="text" id="t-assignee" class="form-control" placeholder="Assign to...">
+                <button class="btn btn-primary" style="width:100%" onclick="addTask()">Delegate Task</button>
+            </div>
+            <div id="task-list"></div>
+        </div>
+
+        <!-- Pipeline View -->
+        <div id="view-pipeline" class="view">
+            <div class="pipe-row" id="pipe-area"></div>
+        </div>
+
+        <!-- Index View -->
+        <div id="view-all" class="view"><div id="all-list"></div></div>
 
         <!-- Settings View -->
         <div id="view-settings" class="view">
-            <h4 style="margin-bottom:20px;">App Settings</h4>
+            <h4 style="margin-bottom:20px;">Settings</h4>
             <div class="stat-card" style="margin-bottom:20px;">
-                <label style="display:block; margin-bottom:10px; font-size:0.8rem; color:var(--dim)">DISPLAY THEME</label>
-                <select class="form-control" onchange="changeTheme(this.value)">
-                    <option value="theme-default">Standard Dark</option>
+                <label style="font-size:0.8rem; color:var(--dim)">THEME SELECTION</label>
+                <select class="form-control" onchange="document.body.className = this.value">
+                    <option value="theme-default">Dark Standard</option>
                     <option value="theme-midnight">Midnight Black</option>
                     <option value="theme-navy">Deep Navy</option>
                 </select>
             </div>
-            <div class="stat-card" style="margin-bottom:20px;">
-                <label style="display:block; margin-bottom:10px; font-size:0.8rem; color:var(--dim)">SYSTEM NOTIFICATIONS</label>
-                <button class="btn btn-outline" style="width:100%" onclick="toast('Push notifications enabled for this session')">Enable Alerts</button>
-            </div>
-            <button class="btn" style="background:var(--red); color:#fff; width:100%" onclick="location.reload()">🔒 Sign Out & Lock App</button>
+            <button class="btn btn-danger" onclick="location.reload()">🔒 Logout & Lock</button>
         </div>
-
-        <!-- Other Views -->
-        <div id="view-tasks" class="view"><div id="task-list"></div></div>
-        <div id="view-pipeline" class="view"><div style="display:flex; gap:15px; overflow-x:auto;" id="pipe-area"></div></div>
-        <div id="view-all" class="view"><div id="all-list"></div></div>
     </div>
 
-    <!-- DETAIL PANEL -->
+    <!-- Detail Panel -->
     <div id="panel">
-        <div style="padding:20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-            <h3 id="panel-title" style="font-family:'Syne'">Detail</h3>
-            <button onclick="closePanel()" style="background:none; border:none; color:#fff; font-size:28px;">✕</button>
-        </div>
-        <div class="panel-content" id="panel-content"></div>
-        <div id="panel-footer" style="padding:20px; border-top:1px solid var(--border); display:flex; gap:10px; background:var(--surface);"></div>
-    </div>
-
-    <!-- MODAL: ADD -->
-    <div id="modal-add" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:3000; display:none; align-items:center; justify-content:center; padding:20px;">
-        <div style="background:var(--surface); width:100%; max-width:500px; border-radius:24px; padding:30px; border:1px solid var(--border); max-height:90vh; overflow-y:auto;">
-            <h3 style="margin-bottom:20px; font-family:'Syne'">Onboard New Driver</h3>
-            <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:20px;">
-                <img id="img-preview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
-                <input type="file" id="in-photo" accept="image/*" style="display:none;" onchange="previewPhoto(this)">
-                <button class="btn btn-outline" style="margin-top:10px; font-size:0.7rem;" onclick="document.getElementById('in-photo').click()">Upload Photo</button>
-            </div>
-            <input type="text" id="in-name" class="form-control" placeholder="Full Name">
-            <input type="tel" id="in-wa" class="form-control" placeholder="WhatsApp Number">
-            <select id="in-deal" class="form-control">
-                <option value="4000">Rent-to-Own (R4,000)</option>
-                <option value="2500">Cash Deal (R2,500)</option>
-            </select>
-            <div style="background:#000; padding:10px; height:100px; overflow-y:auto; font-size:0.7rem; color:var(--dim); margin-bottom:15px; border-radius:8px;">
-                FULL TERMS: Waardeer Holdings assist with Uber onboarding. 80% fee non-refundable once started. We do not guarantee approval.
-            </div>
-            <label style="display:flex; gap:10px; font-size:0.8rem; margin-bottom:20px; align-items:center;"><input type="checkbox" id="in-fica" onchange="document.getElementById('btn-save').disabled = !this.checked"> Agree to T&Cs</label>
-            <button class="btn btn-primary" id="btn-save" style="width:100%" disabled onclick="saveDriver()">Assign & Record Sale</button>
-        </div>
-    </div>
-
-    <div id="toasts" style="position:fixed; bottom:20px; right:20px; z-index:9999;"></div>
-
-    <script>
-        // Security
-        let masterPass = localStorage.getItem('oh_za_v10_pass');
-        function handleAuth() {
-            const val = document.getElementById('pass-input').value;
-            if(!masterPass) { localStorage.setItem('oh_za_v10_pass', val); masterPass = val; unlock(); }
-            else if(val === masterPass) unlock();
-            else alert("Denied");
-        }
-        function unlock() { document.getElementById('login-screen').style.display='none'; refresh(); }
-
-        const STAGES = ["Photo Approved", "Fingerprints", "Bag Auth", "Final Review", "Active"];
-        let drivers = JSON.parse(localStorage.getItem('oh_za_v10_drivers')) || [];
-        let tasks = JSON.parse(localStorage.getItem('oh_za_v10_tasks')) || [];
-        let currentPhoto = null;
-
-        function save() { 
-            localStorage.setItem('oh_za_v10_drivers', JSON.stringify(drivers)); 
-            localStorage.setItem('oh_za_v10_tasks', JSON.stringify(tasks));
-        }
-
-        function toast(m) {
-            const t = document.createElement('div'); t.style.background='#fff'; t.style.color='#000'; t.style.padding='15px 20px'; t.style.borderRadius='10px'; t.style.marginTop='10px'; t.innerText=m;
-            document.getElementById('toasts').appendChild(t); setTimeout(() => t.remove(), 3000);
-        }
-
-        function previewPhoto(input) {
-            const reader = new FileReader();
-            reader.onload = (e) => { currentPhoto = e.target.result; document.getElementById('img-preview').src = currentPhoto; };
-            reader.readAsDataURL(input.files[0]);
-        }
-
-        function switchView(v) {
-            document.querySelectorAll('.view').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(`view-${v}`).classList.add('active');
-            document.getElementById(`nav-${v}`).classList.add('active');
-            document.getElementById('view-title').innerText = v.toUpperCase();
-            document.getElementById('sidebar').classList.remove('mobile-open');
-            refresh();
-        }
-
-        function changeTheme(t) { document.body.className = t; }
-
-        function saveDriver() {
-            const d = { 
-                id: Date.now(), 
-                name: document.getElementById('in-name').value, 
-                wa: document.getElementById('in-wa').value, 
-                rev: parseInt(document.getElementById('in-deal').value),
-                photo: currentPhoto, 
-                stage: 0, done: false 
-            };
-            drivers.push(d); save(); closeModal('modal-add'); currentPhoto=null; refresh(); toast("Driver & Revenue Logged");
-        }
-
-        function openDriverDetail(id) {
-            const d = drivers.find(x => x.id === id);
-            document.getElementById('panel-title').innerText = "Driver Profile";
-            document.getElementById('panel-content').innerHTML = `
-                <div style="display:flex; gap:15px; align-items:center; margin-bottom:20px;">
-                    <img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" style="width:70px; height:70px; border-radius:50%; border:2px solid var(--primary);">
-                    <div><h3>${d.name}</h3><span class="revenue-pill ${d.rev === 4000 ? 'pill-rent' : 'pill-cash'}">${d.rev === 4000 ? 'RENT-TO-OWN' : 'CASH DEAL'}</span></div>
-                </div>
-                <div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:12px; margin-bottom:20px;">
-                    <button class="btn btn-outline" style="width:100%; margin-bottom:10px;" onclick="downloadDriverData(${d.id})">📁 Download Records</button>
-                    <button class="btn btn-outline" style="width:100%" onclick="window.open('${d.photo}', '_blank')">🖼️ View Full Image</button>
-                </div>
-                ${STAGES.map((s,i) => `<div style="padding:10px; margin-bottom:5px; border-radius:8px; background:${i <= d.stage ? 'var(--border)' : 'transparent'}; color:${i <= d.stage ? '#fff' : '#444'}">${i < d.stage ? '✓' : i+1}. ${s}</div>`).join('')}
-            `;
-            document.getElementById('panel').classList.add('open');
-        }
-
-        function downloadDriverData(id) {
-            const d = drivers.find(x => x.id === id);
-            const data = `ONBOARDING HUB ZA - DRIVER RECORD\nName: ${d.name}\nWhatsApp: ${d.wa}\nRevenue Category: R${d.rev}\nStage Index: ${d.stage}\n\nWAARDEER HOLDINGS`;
-            const blob = new Blob([data], {type: 'text/plain'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = `${d.name}_Records.txt`; a.click();
-        }
-
-        function refresh() {
-            // Metrics
-            const active = drivers.filter(d => !d.done).length;
-            const rev = drivers.reduce((a, b) => a + b.rev, 0);
-            document.getElementById('stat-active').innerText = active;
-            document.getElementById('stat-rev').innerText = "R" + rev.toLocaleString();
-            
-            // Revenue View
-            document.getElementById('rev-total-large').innerText = "R" + rev.toLocaleString();
-            document.getElementById('rev-rent-count').innerText = drivers.filter(d => d.rev === 4000).length;
-            document.getElementById('rev-cash-count').innerText = drivers.filter(d => d.rev === 2500).length;
-
-            document.getElementById('rev-list').innerHTML = drivers.map(d => `
-                <div class="task-card">
-                    <div style="flex:1"><b>${d.name}</b></div>
-                    <span class="revenue-pill ${d.rev === 4000 ? 'pill-rent' : 'pill-cash'}">R${d.rev}</span>
-                </div>
-            `).join('');
-
-            // List
-            document.getElementById('recent-list').innerHTML = drivers.slice(-5).reverse().map(d => `
-                <div class="task-card" onclick="openDriverDetail(${d.id})">
-                    <img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="driver-img-sm">
-                    <div style="flex:1"><b>${d.name}</b><br><small style="color:var(--dim)">${STAGES[d.stage]}</small></div>
-                </div>
-            `).join('');
-            
-            document.getElementById('all-list').innerHTML = drivers.map(d => `
-                <div class="task-card" onclick="openDriverDetail(${d.id})">
-                    <img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="driver-img-sm">
-                    <div style="flex:1"><b>${d.name}</b> • ${d.done ? 'Done' : STAGES[d.stage]}</div>
-                </div>`).join('');
-        }
-
-        function openModal(id) { document.getElementById(id).style.display='flex'; }
-        function closeModal(id) { document.getElementById(id).style.display='none'; }
-        function closePanel() { document.getElementById('panel').classList.remove('open'); }
-
-        if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('sw.js')); }
-    </script>
-</body>
-                                                                                     </html>
+        <div style="padding:20px; border-bottom:1px solid var(--border); display
