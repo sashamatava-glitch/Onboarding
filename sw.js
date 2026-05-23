@@ -1,18 +1,19 @@
-// Onboarding Hub ZA - Service Worker V14.0
-const CACHE_NAME = 'oh-za-v14';
+const CACHE_NAME = 'oh-za-v14-fixed';
 
-// Assets to store for offline use
-const assets = [
-  './',
-  './index.html',
-  './manifest.json',
-  './logo.png'
-];
-
-// 1. INSTALL: Download the new V14 files
 self.addEventListener('install', (e) => {
-  // Force the new version to activate immediately
   self.skipWaiting();
+});
+
+self.addEventListener('activate', (e) => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('V14 Caching: Succ
+    caches.keys().then((keys) => {
+      return Promise.all(keys.map((key) => {
+        if (key !== CACHE_NAME) return caches.delete(key);
+      }));
+    }).then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', (e) => {
+  e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+});
