@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Onboarding Hub ZA</title>
     
-    <!-- PWA Settings -->
+    <!-- Apple & Android PWA Support -->
     <meta name="theme-color" content="#0d0f14">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Onboarding ZA">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1162/1162456.png">
     <link rel="manifest" href="manifest.json">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,7 +30,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
         
-        /* Layout */
         #sidebar { width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; transition: 0.3s; z-index: 1000; }
         #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         #topbar { height: 64px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
@@ -34,39 +37,30 @@
         .view { padding: 20px; flex: 1; overflow-y: auto; display: none; }
         .view.active { display: block; }
 
-        /* UI Elements */
         .sidebar-brand { padding: 24px; border-bottom: 1px solid var(--border); }
-        .sidebar-brand h2 { font-family: 'Syne'; font-size: 1.2rem; color: var(--primary); }
-        .sidebar-brand span { font-size: 0.7rem; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
-        
-        .nav-item { padding: 12px 20px; cursor: pointer; color: var(--dim); border-radius: 8px; margin: 4px 10px; transition: 0.2s; }
+        .sidebar-brand h2 { font-family: 'Syne'; font-size: 1.1rem; color: var(--primary); }
+        .sidebar-brand span { font-size: 0.6rem; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; }
+        .nav-item { padding: 12px 20px; cursor: pointer; color: var(--dim); border-radius: 8px; margin: 4px 10px; font-weight: 500; }
         .nav-item.active { background: var(--border); color: #fff; }
 
-        .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
+        .btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; font-family: inherit; }
         .btn-primary { background: var(--primary); color: #000; }
         .btn-danger { background: rgba(255, 77, 109, 0.1); color: var(--red); border: 1px solid var(--red); }
-        .btn-danger:active { background: var(--red); color: #fff; }
-        .btn-whatsapp { background: var(--whatsapp); color: #fff; width: 100%; margin-top: 15px; font-size: 1rem; }
-        .btn:active { transform: scale(0.98); }
+        .btn-whatsapp { background: var(--whatsapp); color: #fff; width: 100%; margin-top: 15px; }
         .btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* Detail Panel */
-        #panel { position: fixed; top: 0; right: -100%; width: 500px; height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 2000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
+        #panel { position: fixed; top: 0; right: -100%; width: 500px; height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 2000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; }
         #panel.open { right: 0; }
         .panel-body { padding: 24px; overflow-y: auto; flex: 1; }
         
-        /* Stats */
         .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 25px; }
         .stat-card { background: var(--surface); padding: 20px; border-radius: 15px; border: 1px solid var(--border); }
         .stat-card div { font-size: 1.8rem; font-weight: 800; font-family: 'Syne'; color: var(--primary); }
-
-        /* Form */
+        
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 0.8rem; color: var(--dim); margin-bottom: 5px; }
         .form-control { width: 100%; padding: 14px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 10px; font-size: 1rem; }
-        .fica-box { border: 1px solid var(--red); background: rgba(255, 77, 109, 0.05); padding: 15px; border-radius: 10px; font-size: 0.8rem; color: #ffcbd4; margin: 15px 0; line-height: 1.4; }
+        .fica-box { border: 1px solid var(--red); background: rgba(255, 77, 109, 0.05); padding: 15px; border-radius: 10px; font-size: 0.75rem; color: #ffcbd4; margin: 15px 0; }
 
-        /* Pipeline */
         .pipe-row { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px; }
         .pipe-col { min-width: 280px; background: rgba(255,255,255,0.02); border-radius: 15px; padding: 15px; height: fit-content; }
 
@@ -89,9 +83,6 @@
             <div id="nav-pipeline" class="nav-item" onclick="switchView('pipeline')">📋 Pipeline Board</div>
             <div id="nav-all" class="nav-item" onclick="switchView('all')">👥 Driver Index</div>
         </div>
-        <div style="padding: 20px; border-top: 1px solid var(--border);">
-            <div style="font-size: 0.6rem; color: var(--dim); text-align: center; margin-bottom: 10px;">V4.0 - Delete Enabled</div>
-        </div>
     </div>
 
     <div id="main">
@@ -103,40 +94,25 @@
 
         <div id="view-dashboard" class="view active">
             <div class="stats" id="stats-area"></div>
-            <h4 style="margin: 20px 0 15px 0; font-family: 'Syne';">Recent Drivers</h4>
+            <h4 style="margin-bottom:15px; font-family:'Syne'">Recent Drivers</h4>
             <div id="recent-list"></div>
         </div>
 
-        <div id="view-pipeline" class="view">
-            <div class="pipe-row" id="pipe-area"></div>
-        </div>
-
-        <div id="view-all" class="view">
-            <div id="all-list"></div>
-        </div>
+        <div id="view-pipeline" class="view"><div class="pipe-row" id="pipe-area"></div></div>
+        <div id="view-all" class="view"><div id="all-list"></div></div>
     </div>
 
-    <!-- Detail Panel -->
     <div id="panel">
         <div style="padding:20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-            <h3 id="p-name" style="font-family:'Syne'">Driver Detail</h3>
+            <h3 id="p-name" style="font-family:'Syne'">Driver Profile</h3>
             <button onclick="closePanel()" style="background:none; border:none; color:#fff; font-size:28px;">✕</button>
         </div>
         <div class="panel-body">
             <div id="p-info" style="margin-bottom:25px; line-height:1.8; background:rgba(255,255,255,0.03); padding:15px; border-radius:12px;"></div>
-            
             <h4 style="margin-bottom:15px; font-family:'Syne'">Journey Status</h4>
             <div id="p-steps"></div>
-            
-            <div style="margin-top:30px; padding:20px; background:#1c212b; border-radius:15px; border:1px solid var(--whatsapp);">
-                <h4 style="color:var(--whatsapp); margin-bottom:10px;">WhatsApp Dispatch</h4>
-                <button class="btn btn-whatsapp" onclick="sendWhatsApp()">Open WhatsApp Now</button>
-            </div>
-
-            <!-- Danger Zone -->
-            <div style="margin-top:40px; padding-top:20px; border-top:1px solid var(--border);">
-                <button class="btn btn-danger" style="width:100%" onclick="deleteDriver()">Delete Driver Profile</button>
-            </div>
+            <button class="btn btn-whatsapp" onclick="sendWhatsApp()">Open WhatsApp Now</button>
+            <button class="btn btn-danger" style="width:100%; margin-top:30px;" onclick="deleteDriver()">Delete Profile</button>
         </div>
         <div style="padding:20px; border-top:1px solid var(--border); display:flex; gap:10px; background:var(--surface);">
             <button class="btn" style="flex:1; background:var(--border); color:#fff;" onclick="changeStage(-1)">Back</button>
@@ -145,55 +121,37 @@
         </div>
     </div>
 
-    <!-- Modal: Add -->
     <div id="modal-add" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:3000; display:none; align-items:center; justify-content:center; padding:20px;">
         <div style="background:var(--surface); width:100%; max-width:500px; border-radius:20px; padding:25px; max-height:95vh; overflow-y:auto;">
             <h3 style="margin-bottom:20px; font-family:'Syne'">New Driver Onboarding</h3>
-            <div class="form-group"><label>Full Name</label><input type="text" id="in-name" class="form-control"></div>
-            <div class="form-group"><label>South African ID</label><input type="number" id="in-id" class="form-control"></div>
-            <div class="form-group"><label>WhatsApp Number</label><input type="tel" id="in-wa" class="form-control" placeholder="0821234567"></div>
-            <div class="form-group"><label>Vehicle</label><select id="in-veh" class="form-control"><option>Motorbike</option><option>Car</option><option>Bicycle</option></select></div>
-            
-            <div class="fica-box">
-                I hereby confirm that all information provided is true and accurate per South African FICA standards. I understand that providing false information is a criminal offense.
-            </div>
-            <label style="display:flex; gap:12px; font-size:0.85rem; margin:20px 0; align-items:center;">
-                <input type="checkbox" id="in-fica" onchange="document.getElementById('btn-add').disabled = !this.checked" style="width:20px; height:20px;">
-                I agree to the FICA Declaration.
-            </label>
-            
-            <div style="display:flex; gap:10px;">
-                <button class="btn" style="flex:1; background:transparent; border:1px solid var(--border); color:#fff;" onclick="closeModal('modal-add')">Cancel</button>
-                <button class="btn btn-primary" id="btn-add" style="flex:1" disabled onclick="addDriver()">Start Onboarding</button>
-            </div>
+            <div class="form-group"><input type="text" id="in-name" class="form-control" placeholder="Full Name"></div>
+            <div class="form-group"><input type="number" id="in-id" class="form-control" placeholder="SA ID Number"></div>
+            <div class="form-group"><input type="tel" id="in-wa" class="form-control" placeholder="WhatsApp Number"></div>
+            <div class="form-group"><select id="in-veh" class="form-control"><option>Motorbike</option><option>Car</option></select></div>
+            <div class="fica-box">I confirm all info is accurate per SA FICA standards. Providing false info is a criminal offense.</div>
+            <label style="display:flex; gap:12px; font-size:0.85rem; margin:20px 0; align-items:center;"><input type="checkbox" id="in-fica" onchange="document.getElementById('btn-add').disabled = !this.checked"> I agree to FICA Declaration.</label>
+            <div style="display:flex; gap:10px;"><button class="btn" style="flex:1; background:transparent; border:1px solid var(--border); color:#fff;" onclick="closeModal('modal-add')">Cancel</button><button class="btn btn-primary" id="btn-add" style="flex:1" disabled onclick="addDriver()">Start</button></div>
         </div>
     </div>
 
     <div id="toasts" style="position:fixed; bottom:20px; right:20px; z-index:9999;"></div>
 
     <script>
-        // PWA Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => navigator.serviceWorker.register('sw.js'));
-        }
-
         const STAGES = [
-            { name: "Profile Photo Approved", color: "#ff4d6d", icon: "📥", msg: "Hi [Name], great news!\n\nYour Uber profile photo has been successfully uploaded and accepted. Let’s get you on the road! 🚀" },
-            { name: "Fingerprint Check", color: "#ff7c3e", icon: "🔍", msg: "Hi [Name], your profile is shaping up perfectly!\n\nPlease complete your fingerprint check next so we can clear the final security steps. 🔒" },
-            { name: "Delivery Bag Authorization", color: "#f5c842", icon: "🎒", msg: "Hi [Name], you are officially authorized!\n\nYou can now go ahead and buy your delivery bag. Grab your gear and let's get ready for your first trip. 🎒" },
-            { name: "Profile Activation", color: "#0094ff", icon: "⚙️", msg: "Hi [Name], hang tight!\n\nWe are now activating your profile on the system and getting everything ready for you to roll. ⚙️" },
-            { name: "Account Active", color: "#00c896", icon: "🎉", msg: "Hi [Name], congratulations!\n\nYour account is officially ACTIVE! Time to go online, accept trips, and start earning. Drive safely out there! 🎉" }
+            { name: "Profile Photo Approved", color: "#ff4d6d", msg: "Hi [Name], great news!\n\nYour Uber profile photo has been successfully uploaded and accepted. Let’s get you on the road! 🚀" },
+            { name: "Fingerprint Check", color: "#ff7c3e", msg: "Hi [Name], your profile is shaping up perfectly!\n\nPlease reserve R350 to pay at Postnet/HURU and complete your fingerprint check next so we can clear the final security steps. 🔒" },
+            { name: "Delivery Bag Authorization", color: "#f5c842", msg: "Hi [Name], you are officially authorized!\n\nPlease pay R800 for your bag purchase to our FNB Account: 63094968030 (Waardeer Holdings). Once paid, grab your gear and let's get ready for your first trip. 🎒" },
+            { name: "Profile Activation", color: "#0094ff", msg: "Hi [Name], hang tight!\n\nWe are now activating your profile on the system and getting everything ready for you to roll. ⚙️" },
+            { name: "Account Active", color: "#00c896", msg: "Hi [Name], congratulations!\n\nYour account is officially ACTIVE! Time to go online, accept trips, and start earning. Drive safely out there! 🎉" }
         ];
 
         const FOOTER = "\n\nOnboardingHub ZA\n(proudly powered by Waardeer Holdings)";
-
-        let drivers = JSON.parse(localStorage.getItem('oh_za_v3')) || [];
+        let drivers = JSON.parse(localStorage.getItem('oh_za_vfinal')) || [];
         let activeId = null;
 
         function toast(m) {
-            const t = document.createElement('div'); t.style.background='#fff'; t.style.color='#000'; t.style.padding='15px 25px'; t.style.borderRadius='10px'; t.style.marginTop='10px'; t.style.fontWeight='700'; t.innerText=m;
-            document.getElementById('toasts').appendChild(t);
-            setTimeout(() => t.remove(), 3000);
+            const t = document.createElement('div'); t.style.background='#fff'; t.style.color='#000'; t.style.padding='15px 25px'; t.style.borderRadius='10px'; t.style.marginTop='10px'; t.innerText=m;
+            document.getElementById('toasts').appendChild(t); setTimeout(() => t.remove(), 3000);
         }
 
         function switchView(v) {
@@ -210,124 +168,72 @@
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
         function addDriver() {
-            const d = {
-                id: Date.now(),
-                name: document.getElementById('in-name').value,
-                idNum: document.getElementById('in-id').value,
-                whatsapp: document.getElementById('in-wa').value,
-                veh: document.getElementById('in-veh').value,
-                stage: 0, 
-                done: false
-            };
-            if(!d.name || !d.whatsapp) return alert("Name and WhatsApp required");
-            drivers.push(d);
-            save();
-            closeModal('modal-add');
-            toast("Driver Added!");
-            switchView('dashboard');
+            const d = { id: Date.now(), name: document.getElementById('in-name').value, idNum: document.getElementById('in-id').value, whatsapp: document.getElementById('in-wa').value, veh: document.getElementById('in-veh').value, stage: 0, done: false };
+            if(!d.name || !d.whatsapp) return;
+            drivers.push(d); save(); closeModal('modal-add'); refresh(); toast("Driver Added!");
         }
 
-        function deleteDriver() {
-            if (confirm("Are you sure you want to delete this driver? This action cannot be undone.")) {
-                drivers = drivers.filter(d => d.id !== activeId);
-                save();
-                closePanel();
-                refresh();
-                toast("Driver Deleted");
-            }
-        }
-
-        function save() { localStorage.setItem('oh_za_v3', JSON.stringify(drivers)); }
+        function save() { localStorage.setItem('oh_za_vfinal', JSON.stringify(drivers)); }
 
         function refresh() {
             const active = drivers.filter(d => !d.done).length;
-            document.getElementById('stats-area').innerHTML = `
-                <div class="stat-card"><h4>Active</h4><div>${active}</div></div>
-                <div class="stat-card"><h4>Done</h4><div>${drivers.length - active}</div></div>
-                <div class="stat-card"><h4>Total</h4><div>${drivers.length}</div></div>
-            `;
-
-            document.getElementById('recent-list').innerHTML = drivers.slice(-5).reverse().map(d => `
-                <div onclick="openPanel(${d.id})" style="background:var(--surface); padding:18px; border-radius:15px; margin-bottom:10px; border:1px solid var(--border); cursor:pointer;">
-                    <div style="display:flex; justify-content:space-between;">
-                        <b>${d.name}</b>
-                        <span style="color:${STAGES[d.stage].color}; font-size:0.8rem; font-weight:700;">${d.done ? 'COMPLETED' : STAGES[d.stage].name}</span>
-                    </div>
-                </div>
-            `).join('');
-
-            document.getElementById('all-list').innerHTML = drivers.map(d => `
-                <div onclick="openPanel(${d.id})" style="background:var(--surface); padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid var(--border); cursor:pointer;">
-                    <b>${d.name}</b> • ${d.done ? '✅ ACTIVE' : STAGES[d.stage].name}
-                </div>
-            `).join('');
-
+            document.getElementById('stats-area').innerHTML = `<div class="stat-card"><h4>Active</h4><div>${active}</div></div><div class="stat-card"><h4>Total</h4><div>${drivers.length}</div></div>`;
+            document.getElementById('recent-list').innerHTML = drivers.slice(-5).reverse().map(d => `<div onclick="openPanel(${d.id})" style="background:var(--surface); padding:15px; border-radius:12px; margin-bottom:10px; border:1px solid var(--border); cursor:pointer;"><b>${d.name}</b> <span style="float:right; color:${STAGES[d.stage].color}">${d.done ? 'DONE' : STAGES[d.stage].name}</span></div>`).join('');
+            document.getElementById('all-list').innerHTML = drivers.map(d => `<div onclick="openPanel(${d.id})" style="background:var(--surface); padding:15px; border-radius:10px; margin-bottom:10px; border:1px solid var(--border); cursor:pointer;"><b>${d.name}</b> • ${d.done ? '✅ Active' : STAGES[d.stage].name}</div>`).join('');
             document.getElementById('pipe-area').innerHTML = STAGES.map((s, i) => `
                 <div class="pipe-col">
-                    <div style="color:${s.color}; font-weight:800; margin-bottom:15px; display:flex; justify-content:space-between;">
-                        <span>${s.icon} ${s.name}</span>
-                        <span style="background:${s.color}; color:#000; padding:2px 8px; border-radius:10px; font-size:0.7rem;">${drivers.filter(d => d.stage === i && !d.done).length}</span>
-                    </div>
-                    ${drivers.filter(d => d.stage === i && !d.done).map(d => `
-                        <div onclick="openPanel(${d.id})" style="background:rgba(0,0,0,0.3); padding:12px; border-radius:10px; margin-bottom:8px; font-size:0.9rem; cursor:pointer; border:1px solid var(--border);">${d.name}</div>
-                    `).join('')}
-                </div>
-            `).join('');
+                    <div style="color:${s.color}; font-weight:800; margin-bottom:15px;">${s.name} (${drivers.filter(d => d.stage === i && !d.done).length})</div>
+                    ${drivers.filter(d => d.stage === i && !d.done).map(d => `<div onclick="openPanel(${d.id})" style="background:#000; padding:12px; border-radius:10px; margin-bottom:8px; border:1px solid var(--border); cursor:pointer;">${d.name}</div>`).join('')}
+                </div>`).join('');
         }
 
         function openPanel(id) {
             activeId = id;
-            const d = drivers.find(x => x.id === id);
+            const d = drivers.find(x => x.id === activeId);
             if(!d) return;
             document.getElementById('p-name').innerText = d.name;
-            document.getElementById('p-info').innerHTML = `
-                <div style="color:var(--dim); font-size:0.75rem; text-transform:uppercase;">Driver Profile</div>
-                <b>ID:</b> ${d.idNum || 'N/A'}<br>
-                <b>WhatsApp:</b> ${d.whatsapp}<br>
-                <b>Vehicle:</b> ${d.veh}
-            `;
+            document.getElementById('p-info').innerHTML = `<b>ID:</b> ${d.idNum}<br><b>WhatsApp:</b> ${d.whatsapp}<br><b>Vehicle:</b> ${d.veh}`;
             document.getElementById('p-steps').innerHTML = STAGES.map((s, i) => `
                 <div style="display:flex; gap:15px; margin-bottom:15px; opacity:${i <= d.stage ? '1' : '0.3'}">
-                    <div style="width:30px; height:30px; border-radius:50%; background:${i <= d.stage ? s.color : 'transparent'}; border:2px solid ${s.color}; display:flex; align-items:center; justify-content:center; color:${i <= d.stage ? '#000' : s.color}; font-weight:800;">${i < d.stage ? '✓' : i+1}</div>
-                    <div>
-                        <div style="font-weight:700; color:${i === d.stage ? s.color : '#fff'}">${s.name}</div>
-                        ${i === d.stage ? `<div style="font-size:0.75rem; color:var(--dim); margin-top:4px;">Current Active Stage</div>` : ''}
-                    </div>
-                </div>
-            `).join('');
+                    <div style="width:28px; height:28px; border-radius:50%; border:2px solid ${s.color}; display:flex; align-items:center; justify-content:center; color:${i <= d.stage ? s.color : '#444'}; font-weight:800; font-size:12px;">${i < d.stage ? '✓' : i+1}</div>
+                    <div style="font-weight:700; color:${i === d.stage ? s.color : '#fff'}">${s.name}</div>
+                </div>`).join('');
             document.getElementById('panel').classList.add('open');
         }
 
         function closePanel() { document.getElementById('panel').classList.remove('open'); }
 
-        function sendWhatsApp() {
-            const d = drivers.find(x => x.id === activeId);
-            const stage = STAGES[d.stage];
-            let num = d.whatsapp.replace(/\s+/g, '');
-            if(num.startsWith('0')) num = '27' + num.substring(1);
-            const msgBody = stage.msg.replace("[Name]", d.name);
-            const fullMsg = encodeURIComponent(msgBody + FOOTER);
-            window.open(`https://wa.me/${num}?text=${fullMsg}`, '_blank');
-            toast("WhatsApp Dispatched");
+        function changeStage(dir) {
+            const index = drivers.findIndex(x => x.id === activeId);
+            if(index === -1) return;
+            let newStage = drivers[index].stage + dir;
+            if(newStage >= 0 && newStage < STAGES.length) {
+                drivers[index].stage = newStage;
+                save(); refresh(); openPanel(activeId); toast("Stage Updated");
+            }
         }
 
-        function changeStage(dir) {
-            const d = drivers.find(x => x.id === activeId);
-            const newStage = d.stage + dir;
-            if(newStage >= 0 && newStage < STAGES.length) {
-                d.stage = newStage;
-                save(); refresh(); openPanel(activeId);
-                toast("Stage Updated");
+        function deleteDriver() {
+            if(confirm("Delete this driver?")) {
+                drivers = drivers.filter(x => x.id !== activeId);
+                save(); closePanel(); refresh(); toast("Driver Deleted");
             }
         }
 
         function markDone() {
+            const index = drivers.findIndex(x => x.id === activeId);
+            if(index !== -1) { drivers[index].done = true; save(); closePanel(); refresh(); toast("Onboarding Complete!"); }
+        }
+
+        function sendWhatsApp() {
             const d = drivers.find(x => x.id === activeId);
-            d.done = true; save(); closePanel(); refresh();
-            toast("Driver Fully Activated! 🎉");
+            let num = d.whatsapp.replace(/\s+/g, '');
+            if(num.startsWith('0')) num = '27' + num.substring(1);
+            const msg = encodeURIComponent(STAGES[d.stage].msg.replace("[Name]", d.name) + FOOTER);
+            window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
         }
 
         switchView('dashboard');
     </script>
 </body>
-                </html>
+            </html>
