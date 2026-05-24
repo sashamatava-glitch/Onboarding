@@ -1,45 +1,401 @@
-// Version 16.1 - Manual Sync & Fix Update
-const CACHE_NAME = 'oh-za-v16-1';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Onboarding Hub ZA | Master v17</title>
+    
+    <!-- PWA -->
+    <meta name="theme-color" content="#0d0f14">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="logo.png">
 
-const assets = [
-  './',
-  './index.html',
-  './manifest.json',
-  './logo.png'
-];
+    <!-- Corporate Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #0d0f14; --surface: #161a22; --border: #2a2f3d;
+            --text: #ffffff; --dim: #a1a1aa;
+            --primary: #00c896; --blue: #0094ff; --orange: #ff7c3e;
+            --red: #ff4d6d; --yellow: #f5c842; --whatsapp: #25d366;
+            --sidebar-w: 260px;
+        }
 
-// 1. INSTALL: Force the new version to replace the old one immediately
-self.addEventListener('install', (e) => {
-  self.skipWaiting(); 
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('V16.1 Sync Update: Files Cached');
-      return cache.addAll(assets);
-    })
-  );
-});
+        body.theme-midnight { --bg: #000000; --surface: #0a0a0a; --border: #1a1a1a; }
+        body.theme-navy { --bg: #020617; --surface: #0f172a; --border: #1e293b; }
 
-// 2. ACTIVATE: Wipe out the old "Google Error" version (v16.0) and all previous ones
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            console.log('Clearing old system memory:', key);
-            return caches.delete(key);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
-  );
-});
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+        
+        /* SIDEBAR */
+        #sidebar { width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; transition: 0.3s; }
+        .sidebar-brand { padding: 25px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .sidebar-brand img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--primary); }
+        .nav-item { padding: 12px 18px; cursor: pointer; color: var(--dim); border-radius: 10px; margin: 2px 12px; font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
+        .nav-item.active { background: var(--primary); color: #000; font-weight: 700; }
+        .sidebar-footer { margin-top: auto; padding: 20px; border-top: 1px solid var(--border); }
 
-// 3. FETCH: Smart Loading (Work offline, but fetch new updates when online)
-self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    fetch(e.request).catch(() => {
-      return caches.match(e.request);
-    })
-  );
-});
+        /* MAIN */
+        #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        #topbar { height: 60px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        .view { padding: 20px; flex: 1; overflow-y: auto; display: none; }
+        .view.active { display: block; }
+
+        /* REVENUE PRIVACY */
+        .rev-val.hidden { filter: blur(10px); }
+        .eye-btn { background: var(--border); padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; color: var(--primary); cursor: pointer; font-weight: bold; border: 1px solid var(--primary); }
+
+        /* CARDS */
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 25px; }
+        .stat-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 18px; border-radius: 15px; }
+        .stat-card h4 { font-size: 0.6rem; color: var(--dim); text-transform: uppercase; margin-bottom: 5px; }
+        .stat-card .val { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+        .card { background: var(--surface); border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
+        .card:hover { border-color: var(--primary); }
+        .driver-img-sm { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); background: #000; }
+
+        /* FINANCIAL SUMMARY */
+        .fin-block { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--primary); }
+        .pay-row { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 6px; }
+
+        /* FORMS */
+        .form-control { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff; border-radius: 10px; margin-bottom: 12px; font-family: inherit; }
+        .btn { padding: 12px 18px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: #fff; }
+        .btn-whatsapp { background: var(--whatsapp); color: #fff; width: 100%; margin: 15px 0; font-size: 1rem; }
+        .btn-danger { background: rgba(255, 77, 109, 0.1); color: var(--red); border: 1px solid var(--red); width: 100%; }
+
+        /* DETAIL PANEL */
+        #panel { position: fixed; top: 0; right: -100%; width: 500px; height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 5000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; }
+        #panel.open { right: 0; }
+        .panel-content { padding: 25px; overflow-y: auto; flex: 1; }
+        .panel-footer { padding: 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: var(--surface); margin-top: auto; }
+
+        /* T&C SCROLL BOX */
+        .terms-container { background: #000; border: 1px solid var(--border); padding: 15px; border-radius: 12px; height: 200px; overflow-y: auto; font-size: 0.7rem; color: var(--dim); line-height: 1.5; margin-bottom: 15px; }
+
+        @media (max-width: 850px) {
+            #sidebar { position: fixed; height: 100vh; transform: translateX(-100%); }
+            #sidebar.mobile-open { transform: translateX(0); }
+            #panel { width: 100%; }
+            .mobile-btn { display: block !important; }
+        }
+    </style>
+</head>
+<body class="theme-default">
+
+    <!-- SIDEBAR -->
+    <div id="sidebar">
+        <div class="sidebar-brand" onclick="switchView('dashboard')">
+            <img src="logo.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1162/1162456.png'">
+            <h2 style="font-weight:800; font-size:1.1rem; letter-spacing: -0.5px;">HUB ZA</h2>
+        </div>
+        <div style="padding-top: 15px; flex: 1;">
+            <div id="nav-dashboard" class="nav-item active" onclick="switchView('dashboard')">🏠 Dashboard</div>
+            <div id="nav-pipeline" class="nav-item" onclick="switchView('pipeline')">📋 Pipeline Board</div>
+            <div id="nav-revenue" class="nav-item" onclick="switchView('revenue')">💰 Revenue Tracker</div>
+            <div id="nav-tasks" class="nav-item" onclick="switchView('tasks')">✅ Delegation Hub</div>
+            <div id="nav-settings" class="nav-item" onclick="switchView('settings')">⚙️ Settings & Sync</div>
+        </div>
+        <div class="sidebar-footer">
+            <button class="btn btn-primary" onclick="openModal('modal-add')">+ Assign Driver</button>
+        </div>
+    </div>
+
+    <!-- MAIN APP AREA -->
+    <div id="main">
+        <div id="topbar">
+            <button class="btn mobile-btn" style="display:none; background:transparent; color:#fff; font-size:24px;" onclick="document.getElementById('sidebar').classList.toggle('mobile-open')">☰</button>
+            <h3 id="view-title" style="font-weight:800; font-size:1rem;">DASHBOARD</h3>
+            <div class="eye-btn" onclick="togglePrivacy()">👁️ Toggle Privacy</div>
+        </div>
+
+        <div id="view-dashboard" class="view active">
+            <div class="stat-grid">
+                <div class="stat-card"><h4>ACTIVE</h4><div class="val" id="stat-active">0</div></div>
+                <div class="stat-card"><h4>SALES</h4><div class="val rev-val" id="stat-rev">R0</div></div>
+            </div>
+            <h4 style="margin-bottom:15px; font-weight:700;">Recent Additions</h4>
+            <div id="recent-list"></div>
+        </div>
+
+        <div id="view-revenue" class="view">
+            <div class="stat-card" style="margin-bottom:20px; text-align:center;">
+                <h4>Company Portfolio Value</h4>
+                <div class="val rev-val" id="rev-total-big" style="font-size:2.5rem;">R0</div>
+            </div>
+            <h4>Active Payment Ledgers</h4>
+            <div id="revenue-log" style="margin-top:15px;"></div>
+        </div>
+
+        <div id="view-tasks" class="view">
+            <div style="background:var(--surface); padding:20px; border-radius:18px; border:1px solid var(--border); margin-bottom:20px;">
+                <input type="text" id="t-text" class="form-control" placeholder="Task description">
+                <input type="text" id="t-assignee" class="form-control" placeholder="Assignee name">
+                <button class="btn btn-primary" onclick="addTask()">Post Delegation</button>
+            </div>
+            <div id="task-list"></div>
+        </div>
+
+        <div id="view-settings" class="view">
+            <h4 style="margin-bottom:15px;">Manual Sync</h4>
+            <div class="stat-card">
+                <button class="btn btn-outline" style="margin-bottom:10px;" onclick="exportData()">💾 Export Data Key</button>
+                <button class="btn btn-primary" onclick="importData()">📲 Import Data Key</button>
+            </div>
+            <h4 style="margin-top:30px;">Theme</h4>
+            <select class="form-control" onchange="document.body.className = this.value">
+                <option value="theme-default">Corporate Dark</option>
+                <option value="theme-midnight">OLED Midnight</option>
+                <option value="theme-navy">Navy Blue</option>
+            </select>
+        </div>
+
+        <div id="view-pipeline" class="view"><div style="display:flex; gap:15px; overflow-x:auto; padding-bottom:20px;" id="pipe-area"></div></div>
+    </div>
+
+    <!-- DETAIL PANEL (Fixed Navigation Buttons) -->
+    <div id="panel">
+        <div style="padding:20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+            <h3 id="panel-title" style="font-weight:800;">Driver Identity</h3>
+            <button onclick="closePanel()" style="background:none; border:none; color:#fff; font-size:28px;">✕</button>
+        </div>
+        <div class="panel-content" id="panel-content"></div>
+        <div class="panel-footer" id="panel-footer">
+            <!-- Buttons dynamically injected here to ensure they always work -->
+        </div>
+    </div>
+
+    <!-- MODAL: ADD DRIVER -->
+    <div id="modal-add" style="position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:9000; display:none; align-items:center; justify-content:center; padding:20px;">
+        <div style="background:var(--surface); width:100%; max-width:500px; border-radius:24px; padding:30px; border:1px solid var(--border); max-height:92vh; overflow-y:auto;">
+            <h2 style="margin-bottom:20px; font-weight:800;">New Driver</h2>
+            <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:20px;">
+                <img id="img-preview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+                <input type="file" id="in-photo" accept="image/*" style="display:none;" onchange="handlePhoto(this)">
+                <button class="btn" style="font-size:0.7rem; color:var(--primary)" onclick="document.getElementById('in-photo').click()">📸 Upload Photo</button>
+            </div>
+            <input type="text" id="in-name" class="form-control" placeholder="Driver Full Name">
+            <input type="tel" id="in-wa" class="form-control" placeholder="WhatsApp Number">
+            <input type="email" id="in-email" class="form-control" placeholder="Email Address">
+            <select id="in-deal" class="form-control">
+                <option value="4000">Rent-to-Own (R4,000 / R500 wk)</option>
+                <option value="2500">Cash Purchase (R2,500 Total)</option>
+            </select>
+
+            <div class="terms-container">
+                <b>FULL TERMS & CONDITIONS<br>WAARDEER HOLDINGS (PTY) LTD (ONBOARDING HUB ZA)</b><br><br>
+                1. INTRODUCTION: These Terms and Conditions apply to all services provided by Onboarding Hub ZA, a division of Waardeer Holdings (Pty) Ltd. By communicating with us (WhatsApp, calls, email, or forms), you agree to these Terms.<br><br>
+                2. NATURE OF SERVICE: We provide onboarding assistance and administrative support for Uber Eats account creation. We are not affiliated with Uber or Uber Eats. All account approvals are decided by the third-party platform.<br><br>
+                3. CLIENT CONSENT: By engaging with us, you agree to: Provide all required personal information and documents. Allow us to process your information for onboarding. Be recognized as a client of Waardeer Holdings (Pty) Ltd. All communication, invoices, and records serve as proof of this relationship.<br><br>
+                4. CLIENT RESPONSIBILITY: You confirm that all information and documents provided are accurate and belong to you. You take full responsibility for your information and documents. We do not verify the legal validity of documents — this is handled by relevant authorities and platforms.<br><br>
+                5. PAYMENTS & REFUND POLICY: A service fee is charged for onboarding services. 80% of the fee is non-refundable once onboarding has started. A maximum refund of 20% may be considered if the service is not completed (at our discretion). No refunds for: Completed services, Platform delays or rejections, Incorrect or incomplete information.<br><br>
+                6. NO GUARANTEE: We do not guarantee account approval. All decisions are made by the third-party platform.<br><br>
+                7. POPIA & DATA PROTECTION: In line with the Protection of Personal Information Act (POPIA): You consent to the collection and processing of your personal information. Your data is used only for onboarding, verification (KYC), and communication. We take reasonable steps to protect your information and do not share it with unauthorized parties.<br><br>
+                8. LIMITATION OF LIABILITY: Waardeer Holdings (Pty) Ltd is not responsible for: Third-party decisions (e.g., Uber), Application delays or rejections, Any indirect or financial losses.<br><br>
+                9. TERMINATION: We may stop services if: Required information is not provided, There is misuse of our services, These Terms are not followed.<br><br>
+                10. CHANGES TO TERMS: We may update these Terms at any time. Continued use of our services means you accept any updates.<br><br>
+                11. ACCEPTANCE: By proceeding, you confirm that: You have read and understood these Terms. You agree to them. You consent to data processing under POPIA.<br><br>
+                ✅ AGREEMENT: By continuing, you fully accept these Terms & Conditions.
+            </div>
+
+            <label style="display:flex; gap:10px; font-size:0.8rem; margin-bottom:20px; line-height: 1.4; cursor:pointer;">
+                <input type="checkbox" id="in-fica" onchange="document.getElementById('btn-save').disabled = !this.checked" style="width:20px; height:20px; flex-shrink: 0;"> I confirm driver has read and accepted the Terms.
+            </label>
+            <div style="display:flex; gap:10px;">
+                <button class="btn" style="flex:1; border:1px solid var(--border); color:#fff;" onclick="closeModal('modal-add')">Cancel</button>
+                <button class="btn btn-primary" id="btn-save" style="flex:1" disabled onclick="saveDriver()">Confirm Assignment</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toasts" style="position:fixed; bottom:20px; right:20px; z-index:9999;"></div>
+
+    <script>
+        // --- LONG WHATSAPP TEMPLATES RESTORED ---
+        const STAGES = [
+            { 
+                name: "Photo Approved", 
+                color: "#ff4d6d", 
+                msg: "Hi [Name], great news!\n\nYour Uber profile photo has been successfully uploaded and accepted. Let’s get you on the road! 🚀\n\nOnboardingHub ZA\n(Waardeer Holdings)" 
+            },
+            { 
+                name: "Fingerprints", 
+                color: "#ff7c3e", 
+                msg: "Hi [Name], your profile is shaping up perfectly!\n\nPlease reserve R350 to pay at Postnet/HURU and complete your fingerprint check next so we can clear the final security steps. 🔒\n\nOnboardingHub ZA\n(Waardeer Holdings)" 
+            },
+            { 
+                name: "Bag Purchase", 
+                color: "#f5c842", 
+                msg: "Hi [Name], you are officially authorized!\n\nPlease pay R800 for your bag purchase to our FNB Account: 63094968030 (Waardeer Holdings). Once paid, grab your gear and let's get ready for your first trip. 🎒\n\nOnboardingHub ZA\n(Waardeer Holdings)" 
+            },
+            { 
+                name: "Final Review", 
+                color: "#0094ff", 
+                msg: "Hi [Name], hang tight!\n\nWe are now activating your profile on the system and getting everything ready for you to roll. ⚙️\n\nOnboardingHub ZA\n(Waardeer Holdings)" 
+            },
+            { 
+                name: "ACTIVE", 
+                color: "#00c896", 
+                msg: "Hi [Name], congratulations!\n\nYour account is officially ACTIVE! Time to go online, accept trips, and start earning. Drive safely out there! 🎉\n\nOnboardingHub ZA\n(Waardeer Holdings)" 
+            }
+        ];
+
+        let drivers = JSON.parse(localStorage.getItem('oh_za_v17_drv')) || [];
+        let tasks = JSON.parse(localStorage.getItem('oh_za_v17_tsk')) || [];
+        let currentImg = null; let activeId = null;
+
+        function save() { localStorage.setItem('oh_za_v17_drv', JSON.stringify(drivers)); localStorage.setItem('oh_za_v17_tsk', JSON.stringify(tasks)); }
+
+        // --- CORE NAVIGATION ---
+        function switchView(v) {
+            document.querySelectorAll('.view').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            const tv = document.getElementById(`view-${v}`);
+            const tn = document.getElementById(`nav-${v}`);
+            if(tv) tv.classList.add('active');
+            if(tn) tn.classList.add('active');
+            document.getElementById('view-title').innerText = v.toUpperCase();
+            document.getElementById('sidebar').classList.remove('mobile-open');
+            refresh();
+        }
+
+        // --- FINANCIAL/PAYMENTS ---
+        function togglePrivacy() { document.querySelectorAll('.rev-val').forEach(v => v.classList.toggle('hidden')); }
+        function logR500(id) {
+            const d = drivers.find(x => x.id === id);
+            d.payments = d.payments || [];
+            d.payments.push({ date: new Date().toLocaleDateString(), amount: 500 });
+            save(); openDriverPanel(id); refresh();
+        }
+
+        // --- DATA INPUT ---
+        function handlePhoto(input) {
+            const reader = new FileReader();
+            reader.onload = (e) => { currentImg = e.target.result; document.getElementById('img-preview').src = currentImg; };
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        function saveDriver() {
+            const deal = parseInt(document.getElementById('in-deal').value);
+            drivers.push({ 
+                id: Date.now(), 
+                name: document.getElementById('in-name').value, 
+                wa: document.getElementById('in-wa').value, 
+                email: document.getElementById('in-email').value,
+                rev: deal, 
+                deposit: deal === 2500 ? 1000 : 0, 
+                payments: [], 
+                photo: currentImg, 
+                stage: 0, done: false 
+            });
+            save(); closeModal('modal-add'); currentImg=null; document.getElementById('img-preview').src='https://cdn-icons-png.flaticon.com/512/149/149071.png'; refresh();
+        }
+
+        function openDriverPanel(id) {
+            activeId = id; const d = drivers.find(x => x.id === id);
+            const totalPaid = (d.deposit || 0) + (d.payments || []).reduce((a,b) => a+b.amount, 0);
+            const bal = d.rev - totalPaid;
+            const weeks = Math.ceil(bal / 500);
+
+            document.getElementById('panel-title').innerText = d.name;
+            document.getElementById('panel-content').innerHTML = `
+                <div style="display:flex; gap:15px; align-items:center; margin-bottom:20px;">
+                    <img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" style="width:75px; height:75px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+                    <div><h3 style="font-weight:800">${d.name}</h3><span style="color:var(--orange); font-size:0.75rem; font-weight:700;">Balance Due: R${bal}</span></div>
+                </div>
+
+                <div class="fin-block">
+                    <div class="pay-row"><span>Business Plan:</span><b>${d.rev === 4000 ? 'Rent-to-Own' : 'Cash Deal'}</b></div>
+                    <div class="pay-row"><span>Payments Logged:</span><b class="rev-val">R${totalPaid}</b></div>
+                    <div class="pay-row" style="color:var(--orange)"><span>Weeks Remaining:</span><b>${weeks > 0 ? weeks : 'PAID'}</b></div>
+                    <button class="btn btn-primary" style="width:100%; margin-top:10px; font-size:0.75rem" onclick="logR500(${d.id})">+ Log Weekly R500 Payment</button>
+                </div>
+
+                <div style="margin-top:15px">
+                ${STAGES.map((s,i) => `
+                    <div style="padding:12px; border-radius:10px; margin-bottom:8px; border:1px solid ${i <= d.stage ? 'var(--primary)' : 'var(--border)'}; opacity:${i <= d.stage ? '1' : '0.2'}; background:${i === d.stage ? 'var(--bg)' : 'transparent'}">
+                        <b>STAGE ${i+1}:</b> ${s.name}
+                    </div>
+                `).join('')}
+                </div>
+
+                <button class="btn btn-whatsapp" onclick="sendWhatsApp()">Open WhatsApp Notification 📱</button>
+                <button class="btn" style="width:100%; border:1px solid var(--border); color:#fff" onclick="window.open('${d.photo}', '_blank')">💾 Download Photo</button>
+                <button class="btn" style="width:100%; border:1px solid var(--red); color:var(--red); margin-top:20px; font-size:0.8rem" onclick="deleteDriver(${d.id})">Purge Client Records</button>
+            `;
+
+            // FIXED FOOTER NAVIGATION
+            document.getElementById('panel-footer').innerHTML = `
+                <button class="btn" style="flex:1; border:1px solid var(--border); color:#fff" onclick="moveStage(-1)">PREVIOUS</button>
+                <button class="btn" style="flex:1; background:var(--blue); color:#fff" onclick="moveStage(1)">NEXT STAGE</button>
+                <button class="btn btn-primary" style="flex:1" onclick="markDone()">COMPLETE</button>
+            `;
+
+            document.getElementById('panel').classList.add('open');
+        }
+
+        // --- STAGE NAVIGATION LOGIC ---
+        function moveStage(dir) {
+            const index = drivers.findIndex(x => x.id === activeId);
+            let target = drivers[index].stage + dir;
+            if(target >= 0 && target < STAGES.length) {
+                drivers[index].stage = target;
+                save(); refresh(); openDriverPanel(activeId);
+            }
+        }
+
+        function markDone() { const idx = drivers.findIndex(x => x.id === activeId); drivers[idx].done = true; save(); closePanel(); refresh(); }
+
+        // --- MESSAGING ---
+        function sendWhatsApp() {
+            const d = drivers.find(x => x.id === activeId);
+            let num = d.wa.replace(/\s+/g, ''); if(num.startsWith('0')) num = '27' + num.substring(1);
+            const template = STAGES[d.stage].msg;
+            const fullMsg = encodeURIComponent(template.replace("[Name]", d.name));
+            window.open(`https://wa.me/${num}?text=${fullMsg}`, '_blank');
+        }
+
+        // --- OTHERS ---
+        function addTask() {
+            const t = document.getElementById('t-text').value; const a = document.getElementById('t-assignee').value;
+            if(!t || !a) return;
+            tasks.push({ id: Date.now(), text: t, who: a, logs: [new Date().toLocaleString() + ": Task posted."] });
+            save(); refresh(); document.getElementById('t-text').value=''; document.getElementById('t-assignee').value='';
+        }
+        function openTaskPanel(id) {
+            activeId = id; const t = tasks.find(x => x.id === activeId);
+            document.getElementById('panel-title').innerText = "Delegation Detail";
+            document.getElementById('panel-content').innerHTML = `<h2>${t.text}</h2><p style="color:var(--primary); font-weight:800; margin:10px 0;">Person: ${t.who}</p><div style="margin-top:20px;">${t.logs.map(l => `<div style="background:var(--border); padding:10px; border-radius:10px; margin-bottom:10px; font-size:0.8rem;">${l}</div>`).join('')}</div><textarea id="log-in" class="form-control" placeholder="Update log..." style="margin-top:20px;"></textarea><button class="btn btn-primary" style="width:100%" onclick="addLog(${t.id})">Post Update</button><button class="btn btn-danger" style="margin-top:20px" onclick="deleteTask(${t.id})">Delete Task</button>`;
+            document.getElementById('panel-footer').innerHTML = `<button class="btn btn-primary" style="width:100%" onclick="closePanel()">Finished Viewing</button>`;
+            document.getElementById('panel').classList.add('open');
+        }
+        function addLog(id) { const v = document.getElementById('log-in').value; if(!v) return; tasks.find(x=>x.id===id).logs.push(new Date().toLocaleString() + ": " + v); save(); openTaskPanel(id); }
+        function deleteDriver(id) { if(confirm("Delete Client?")) { drivers = drivers.filter(x=>x.id!==id); save(); closePanel(); refresh(); } }
+        function deleteTask(id) { if(confirm("Delete Task?")) { tasks = tasks.filter(x=>x.id!==id); save(); closePanel(); refresh(); } }
+        function openModal(id) { document.getElementById(id).style.display='flex'; }
+        function closeModal(id) { document.getElementById(id).style.display='none'; }
+        function closePanel() { document.getElementById('panel').classList.remove('open'); }
+        function exportData() { prompt("Your Cloud Sync Key:", btoa(JSON.stringify({d:drivers,t:tasks}))); }
+        function importData() { const k = prompt("Paste Sync Key:"); if(k) { try { const obj=JSON.parse(atob(k)); drivers=obj.d; tasks=obj.t; save(); location.reload(); } catch(e){ alert("Invalid Key"); }} }
+
+        function refresh() {
+            const active = drivers.filter(d => !d.done).length; const rev = drivers.reduce((a, b) => a + b.rev, 0);
+            document.getElementById('stat-active').innerText = active; document.getElementById('stat-rev').innerText = "R" + rev.toLocaleString();
+            if(document.getElementById('view-revenue').classList.contains('active')) {
+                document.getElementById('rev-total-big').innerText = "R" + rev.toLocaleString();
+                document.getElementById('revenue-log').innerHTML = drivers.map(d => `<div class="card" onclick="openDriverPanel(${d.id})"><div style="flex:1"><b>${d.name}</b><br><small>${d.rev === 4000 ? 'Rent-to-Own' : 'Cash Deal'}</small></div><span class="rev-val" style="font-weight:800; color:var(--primary)">R${d.rev}</span></div>`).join('');
+            }
+            document.getElementById('recent-list').innerHTML = drivers.slice(-6).reverse().map(d => `<div class="card" onclick="openDriverPanel(${d.id})"><img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="driver-img-sm"><div style="flex:1"><b>${d.name}</b><br><small style="color:var(--dim)">${STAGES[d.stage].name}</small></div></div>`).join('');
+            document.getElementById('task-list').innerHTML = tasks.map(t => `<div class="card" onclick="openTaskPanel(${t.id})"><div><b>${t.text}</b><br><small style="color:var(--primary)">${t.who}</small></div></div>`).join('');
+            document.getElementById('pipe-area').innerHTML = STAGES.map((s,i) => `<div class="pipe-col"><div style="color:${s.color}; font-weight:800; margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:10px;">${s.name}</div>${drivers.filter(d => d.stage === i && !d.done).map(d => `<div class="card" style="padding:10px; font-size:0.8rem;" onclick="openDriverPanel(${d.id})">${d.name}</div>`).join('')}</div>`).join('');
+        }
+        window.onload = refresh;
+    </script>
+</body>
+</html>
