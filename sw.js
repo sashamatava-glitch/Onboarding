@@ -1,5 +1,5 @@
-// Version 16.0 - Financial & Cloud Sync Update
-const CACHE_NAME = 'oh-za-v16';
+// Version 16.1 - Manual Sync & Fix Update
+const CACHE_NAME = 'oh-za-v16-1';
 
 const assets = [
   './',
@@ -8,25 +8,25 @@ const assets = [
   './logo.png'
 ];
 
-// 1. INSTALL: Download files for offline use
+// 1. INSTALL: Force the new version to replace the old one immediately
 self.addEventListener('install', (e) => {
-  self.skipWaiting(); // Forces the new version to take over immediately
+  self.skipWaiting(); 
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('V16 Caching Success');
+      console.log('V16.1 Sync Update: Files Cached');
       return cache.addAll(assets);
     })
   );
 });
 
-// 2. ACTIVATE: Purge old broken caches (V1 through V15)
+// 2. ACTIVATE: Wipe out the old "Google Error" version (v16.0) and all previous ones
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
-            console.log('Purging old cache version:', key);
+            console.log('Clearing old system memory:', key);
             return caches.delete(key);
           }
         })
@@ -35,12 +35,8 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// 3. FETCH: Safe Mode - Try network first, fall back to cache
-// This prevents the "blank screen" if the phone has a bad internet connection
+// 3. FETCH: Smart Loading (Work offline, but fetch new updates when online)
 self.addEventListener('fetch', (e) => {
-  // Ignore Google Auth requests so the login works properly
-  if (e.request.url.includes('google')) return;
-
   e.respondWith(
     fetch(e.request).catch(() => {
       return caches.match(e.request);
