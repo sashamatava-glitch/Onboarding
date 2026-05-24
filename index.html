@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Onboarding Hub ZA | Master v17</title>
+    <title>Onboarding Hub ZA | Platinum v18</title>
     
     <!-- PWA -->
     <meta name="theme-color" content="#0d0f14">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="logo.png">
 
@@ -18,178 +19,223 @@
     
     <style>
         :root {
+            /* Default Dark Corporate */
             --bg: #0d0f14; --surface: #161a22; --border: #2a2f3d;
             --text: #ffffff; --dim: #a1a1aa;
             --primary: #00c896; --blue: #0094ff; --orange: #ff7c3e;
             --red: #ff4d6d; --yellow: #f5c842; --whatsapp: #25d366;
             --sidebar-w: 260px;
+            --transit: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --glass: rgba(255, 255, 255, 0.03);
+            --shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
 
+        /* THEME PACK */
         body.theme-midnight { --bg: #000000; --surface: #0a0a0a; --border: #1a1a1a; }
         body.theme-navy { --bg: #020617; --surface: #0f172a; --border: #1e293b; }
+        
+        /* NEW THEMES */
+        body.theme-white { 
+            --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0; 
+            --text: #0f172a; --dim: #64748b; --glass: rgba(0,0,0,0.02);
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        body.theme-graphite { 
+            --bg: #27272a; --surface: #3f3f46; --border: #52525b; 
+            --text: #fafafa; --dim: #a1a1aa; 
+        }
+        body.theme-emerald { 
+            --bg: #022c22; --surface: #064e3b; --border: #065f46; 
+            --text: #ecfdf5; --dim: #6ee7b7; 
+        }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: var(--transit); }
         
-        /* SIDEBAR */
-        #sidebar { width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; transition: 0.3s; }
-        .sidebar-brand { padding: 25px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
-        .sidebar-brand img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--primary); }
-        .nav-item { padding: 12px 18px; cursor: pointer; color: var(--dim); border-radius: 10px; margin: 2px 12px; font-weight: 500; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
-        .nav-item.active { background: var(--primary); color: #000; font-weight: 700; }
-        .sidebar-footer { margin-top: auto; padding: 20px; border-top: 1px solid var(--border); }
+        /* SIDEBAR & OVERLAY */
+        #sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; display: none; opacity: 0; transition: opacity 0.3s; }
+        #sidebar { width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; transition: var(--transit); position: relative; }
+        .sidebar-brand { padding: 25px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .sidebar-brand img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--primary); transition: 0.3s; }
+        .nav-item { padding: 14px 18px; cursor: pointer; color: var(--dim); border-radius: 12px; margin: 4px 12px; font-weight: 500; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
+        .nav-item:hover { background: var(--glass); color: var(--text); }
+        .nav-item.active { background: var(--primary); color: #000; font-weight: 700; box-shadow: 0 4px 15px rgba(0, 200, 150, 0.2); }
 
-        /* MAIN */
+        /* MAIN CONTENT */
         #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        #topbar { height: 60px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
-        .view { padding: 20px; flex: 1; overflow-y: auto; display: none; }
-        .view.active { display: block; }
+        #topbar { height: 70px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; transition: var(--transit); }
+        .view { padding: 25px; flex: 1; overflow-y: auto; display: none; }
+        .view.active { display: block; animation: viewIn 0.5s ease; }
+        @keyframes viewIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* REVENUE PRIVACY */
-        .rev-val.hidden { filter: blur(10px); }
-        .eye-btn { background: var(--border); padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; color: var(--primary); cursor: pointer; font-weight: bold; border: 1px solid var(--primary); }
+        /* STATS */
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stat-card { background: var(--glass); border: 1px solid var(--border); padding: 22px; border-radius: 20px; transition: var(--transit); }
+        .stat-card h4 { font-size: 0.65rem; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .stat-card .val { font-size: 1.6rem; font-weight: 800; color: var(--primary); font-family: 'Inter'; }
 
         /* CARDS */
-        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 25px; }
-        .stat-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 18px; border-radius: 15px; }
-        .stat-card h4 { font-size: 0.6rem; color: var(--dim); text-transform: uppercase; margin-bottom: 5px; }
-        .stat-card .val { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
-        .card { background: var(--surface); border: 1px solid var(--border); padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
-        .card:hover { border-color: var(--primary); }
-        .driver-img-sm { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); background: #000; }
+        .card { background: var(--surface); border: 1px solid var(--border); padding: 18px; border-radius: 16px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: var(--transit); box-shadow: var(--shadow); }
+        .card:hover { transform: translateX(5px); border-color: var(--primary); }
+        .driver-img-sm { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border); background: #000; transition: 0.3s; }
 
-        /* FINANCIAL SUMMARY */
-        .fin-block { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--primary); }
-        .pay-row { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 6px; }
+        /* REVENUE TOOLS */
+        .rev-val.hidden { filter: blur(10px); }
+        .eye-btn { background: var(--glass); padding: 8px 14px; border-radius: 10px; font-size: 0.75rem; color: var(--primary); cursor: pointer; border: 1px solid var(--primary); font-weight: bold; }
 
-        /* FORMS */
-        .form-control { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff; border-radius: 10px; margin-bottom: 12px; font-family: inherit; }
-        .btn { padding: 12px 18px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: #000; }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: #fff; }
-        .btn-whatsapp { background: var(--whatsapp); color: #fff; width: 100%; margin: 15px 0; font-size: 1rem; }
-        .btn-danger { background: rgba(255, 77, 109, 0.1); color: var(--red); border: 1px solid var(--red); width: 100%; }
+        /* BUTTONS */
+        .btn { padding: 14px 22px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-family: inherit; transition: var(--transit); font-size: 0.95rem; }
+        .btn-primary { background: var(--primary); color: #000; box-shadow: 0 4px 15px rgba(0, 200, 150, 0.3); }
+        .btn-primary:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text); }
+        .btn-whatsapp { background: var(--whatsapp); color: #fff; width: 100%; margin: 15px 0; }
+        .btn-danger { background: rgba(255, 77, 109, 0.1); color: var(--red); border: 1.5px solid var(--red); }
+
+        /* FLOATING ACTION BUTTON */
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: #000; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 10px 30px rgba(0, 200, 150, 0.4); cursor: pointer; z-index: 900; transition: var(--transit); }
+        .fab:active { transform: scale(0.9); }
 
         /* DETAIL PANEL */
-        #panel { position: fixed; top: 0; right: -100%; width: 500px; height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 5000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; }
+        #panel { position: fixed; top: 0; right: -100%; width: 500px; height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 5000; transition: var(--transit); display: flex; flex-direction: column; box-shadow: -20px 0 50px rgba(0,0,0,0.5); }
         #panel.open { right: 0; }
-        .panel-content { padding: 25px; overflow-y: auto; flex: 1; }
-        .panel-footer { padding: 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: var(--surface); margin-top: auto; }
+        .panel-content { padding: 30px; overflow-y: auto; flex: 1; }
+        .panel-footer { padding: 25px; border-top: 1px solid var(--border); display: flex; gap: 12px; background: var(--surface); }
 
-        /* T&C SCROLL BOX */
-        .terms-container { background: #000; border: 1px solid var(--border); padding: 15px; border-radius: 12px; height: 200px; overflow-y: auto; font-size: 0.7rem; color: var(--dim); line-height: 1.5; margin-bottom: 15px; }
+        /* TERMS & CONDITIONS BOX */
+        .terms-container { background: var(--bg); border: 1px solid var(--border); padding: 18px; border-radius: 14px; height: 200px; overflow-y: auto; font-size: 0.75rem; color: var(--dim); line-height: 1.6; margin-bottom: 20px; }
 
         @media (max-width: 850px) {
             #sidebar { position: fixed; height: 100vh; transform: translateX(-100%); }
             #sidebar.mobile-open { transform: translateX(0); }
-            #panel { width: 100%; }
-            .mobile-btn { display: block !important; }
+            #sidebar-overlay.active { display: block; opacity: 1; }
+            #panel { width: 100%; right: -100%; transform: translateX(0); }
+            .mobile-toggle { display: block !important; }
         }
     </style>
 </head>
 <body class="theme-default">
 
+    <!-- CLICK OUTSIDE OVERLAY -->
+    <div id="sidebar-overlay" onclick="toggleMenu()"></div>
+
     <!-- SIDEBAR -->
     <div id="sidebar">
         <div class="sidebar-brand" onclick="switchView('dashboard')">
             <img src="logo.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1162/1162456.png'">
-            <h2 style="font-weight:800; font-size:1.1rem; letter-spacing: -0.5px;">HUB ZA</h2>
+            <h2 style="font-weight:800; font-size:1.2rem; letter-spacing: -1px;">HUB ZA</h2>
         </div>
         <div style="padding-top: 15px; flex: 1;">
             <div id="nav-dashboard" class="nav-item active" onclick="switchView('dashboard')">🏠 Dashboard</div>
             <div id="nav-pipeline" class="nav-item" onclick="switchView('pipeline')">📋 Pipeline Board</div>
             <div id="nav-revenue" class="nav-item" onclick="switchView('revenue')">💰 Revenue Tracker</div>
             <div id="nav-tasks" class="nav-item" onclick="switchView('tasks')">✅ Delegation Hub</div>
-            <div id="nav-settings" class="nav-item" onclick="switchView('settings')">⚙️ Settings & Sync</div>
+            <div id="nav-settings" class="nav-item" onclick="switchView('settings')">⚙️ Theme & Sync</div>
         </div>
-        <div class="sidebar-footer">
-            <button class="btn btn-primary" onclick="openModal('modal-add')">+ Assign Driver</button>
+        <div style="padding: 20px; border-top: 1px solid var(--border); text-align: center;">
+            <span style="font-size: 0.65rem; color: var(--dim); text-transform: uppercase;">Waardeer Holdings (PTY) LTD</span>
         </div>
     </div>
 
     <!-- MAIN APP AREA -->
     <div id="main">
         <div id="topbar">
-            <button class="btn mobile-btn" style="display:none; background:transparent; color:#fff; font-size:24px;" onclick="document.getElementById('sidebar').classList.toggle('mobile-open')">☰</button>
-            <h3 id="view-title" style="font-weight:800; font-size:1rem;">DASHBOARD</h3>
-            <div class="eye-btn" onclick="togglePrivacy()">👁️ Toggle Privacy</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <button class="btn mobile-toggle" style="display:none; background:transparent; color:var(--text); font-size:24px;" onclick="toggleMenu()">☰</button>
+                <h3 id="view-title" style="font-weight:800; font-size:1rem; letter-spacing: 0.5px;">DASHBOARD</h3>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="eye-btn" onclick="togglePrivacy()">👁️</div>
+                <button class="btn btn-primary" onclick="openModal('modal-add')">Assign +</button>
+            </div>
         </div>
 
+        <!-- Dashboard -->
         <div id="view-dashboard" class="view active">
             <div class="stat-grid">
-                <div class="stat-card"><h4>ACTIVE</h4><div class="val" id="stat-active">0</div></div>
-                <div class="stat-card"><h4>SALES</h4><div class="val rev-val" id="stat-rev">R0</div></div>
+                <div class="stat-card"><h4>ACTIVE DRIVERS</h4><div class="val" id="stat-active">0</div></div>
+                <div class="stat-card"><h4>PORTFOLIO VALUE</h4><div class="val rev-val" id="stat-rev">R0</div></div>
             </div>
-            <h4 style="margin-bottom:15px; font-weight:700;">Recent Additions</h4>
+            <h4 style="margin-bottom:15px; font-weight:700; color:var(--dim)">Recently Updated</h4>
             <div id="recent-list"></div>
         </div>
 
+        <!-- Revenue -->
         <div id="view-revenue" class="view">
-            <div class="stat-card" style="margin-bottom:20px; text-align:center;">
-                <h4>Company Portfolio Value</h4>
-                <div class="val rev-val" id="rev-total-big" style="font-size:2.5rem;">R0</div>
+            <div class="stat-card" style="margin-bottom:25px; text-align:center; background: linear-gradient(to right bottom, var(--surface), var(--bg));">
+                <h4>Projected Company Revenue</h4>
+                <div class="val rev-val" id="rev-total-big" style="font-size:3rem; margin-top:10px;">R0</div>
             </div>
-            <h4>Active Payment Ledgers</h4>
-            <div id="revenue-log" style="margin-top:15px;"></div>
+            <div id="revenue-log" style="margin-top:20px;"></div>
         </div>
 
+        <!-- Tasks -->
         <div id="view-tasks" class="view">
-            <div style="background:var(--surface); padding:20px; border-radius:18px; border:1px solid var(--border); margin-bottom:20px;">
-                <input type="text" id="t-text" class="form-control" placeholder="Task description">
-                <input type="text" id="t-assignee" class="form-control" placeholder="Assignee name">
-                <button class="btn btn-primary" onclick="addTask()">Post Delegation</button>
+            <div style="background:var(--surface); padding:25px; border-radius:24px; border:1px solid var(--border); margin-bottom:30px;">
+                <input type="text" id="t-text" class="form-control" placeholder="Action needed...">
+                <input type="text" id="t-assignee" class="form-control" placeholder="Assigned to...">
+                <button class="btn btn-primary" style="width:100%" onclick="addTask()">Delegate Project</button>
             </div>
             <div id="task-list"></div>
         </div>
 
+        <!-- Settings -->
         <div id="view-settings" class="view">
-            <h4 style="margin-bottom:15px;">Manual Sync</h4>
-            <div class="stat-card">
-                <button class="btn btn-outline" style="margin-bottom:10px;" onclick="exportData()">💾 Export Data Key</button>
-                <button class="btn btn-primary" onclick="importData()">📲 Import Data Key</button>
+            <div class="stat-card" style="margin-bottom:30px;">
+                <h4>Display Interface Theme</h4>
+                <select class="form-control" style="margin-top:15px;" onchange="changeTheme(this.value)">
+                    <option value="theme-default">Corporate Dark (Default)</option>
+                    <option value="theme-midnight">OLED Midnight</option>
+                    <option value="theme-navy">Deep Sea Navy</option>
+                    <option value="theme-white">Professional White</option>
+                    <option value="theme-graphite">Soft Graphite</option>
+                    <option value="theme-emerald">Royal Emerald</option>
+                </select>
             </div>
-            <h4 style="margin-top:30px;">Theme</h4>
-            <select class="form-control" onchange="document.body.className = this.value">
-                <option value="theme-default">Corporate Dark</option>
-                <option value="theme-midnight">OLED Midnight</option>
-                <option value="theme-navy">Navy Blue</option>
-            </select>
+            <div class="stat-card">
+                <h4>System Sync</h4>
+                <div style="display:flex; gap:10px; margin-top:15px;">
+                    <button class="btn btn-outline" style="flex:1" onclick="exportData()">💾 Export Key</button>
+                    <button class="btn btn-outline" style="flex:1" onclick="importData()">📲 Import Key</button>
+                </div>
+            </div>
+            <button class="btn btn-danger" style="width:100%; margin-top:30px;" onclick="location.reload()">🔒 Reload & Secure App</button>
         </div>
 
-        <div id="view-pipeline" class="view"><div style="display:flex; gap:15px; overflow-x:auto; padding-bottom:20px;" id="pipe-area"></div></div>
+        <div id="view-pipeline" class="view"><div class="pipe-row" id="pipe-area"></div></div>
     </div>
 
-    <!-- DETAIL PANEL (Fixed Navigation Buttons) -->
+    <!-- QUICK FAB -->
+    <div class="fab" onclick="openModal('modal-add')">+</div>
+
+    <!-- DETAIL PANEL -->
     <div id="panel">
-        <div style="padding:20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-            <h3 id="panel-title" style="font-weight:800;">Driver Identity</h3>
-            <button onclick="closePanel()" style="background:none; border:none; color:#fff; font-size:28px;">✕</button>
+        <div style="padding:25px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+            <h3 id="panel-title" style="font-weight:800;">Profile</h3>
+            <button onclick="closePanel()" style="background:none; border:none; color:var(--text); font-size:32px; cursor:pointer;">✕</button>
         </div>
         <div class="panel-content" id="panel-content"></div>
-        <div class="panel-footer" id="panel-footer">
-            <!-- Buttons dynamically injected here to ensure they always work -->
-        </div>
+        <div id="panel-footer" class="panel-footer"></div>
     </div>
 
-    <!-- MODAL: ADD DRIVER -->
-    <div id="modal-add" style="position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:9000; display:none; align-items:center; justify-content:center; padding:20px;">
-        <div style="background:var(--surface); width:100%; max-width:500px; border-radius:24px; padding:30px; border:1px solid var(--border); max-height:92vh; overflow-y:auto;">
-            <h2 style="margin-bottom:20px; font-weight:800;">New Driver</h2>
+    <!-- MODAL: ASSIGN -->
+    <div id="modal-add" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9000; display:none; align-items:center; justify-content:center; padding:20px;">
+        <div style="background:var(--surface); width:100%; max-width:500px; border-radius:28px; padding:35px; border:1px solid var(--border); max-height:94vh; overflow-y:auto; position:relative;">
+            <h2 style="margin-bottom:20px; font-weight:800;">Onboard Driver</h2>
             <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:20px;">
-                <img id="img-preview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
+                <img id="img-preview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
                 <input type="file" id="in-photo" accept="image/*" style="display:none;" onchange="handlePhoto(this)">
-                <button class="btn" style="font-size:0.7rem; color:var(--primary)" onclick="document.getElementById('in-photo').click()">📸 Upload Photo</button>
+                <button class="btn" style="color:var(--primary); font-size:0.75rem; margin-top:10px;" onclick="document.getElementById('in-photo').click()">📸 Set Profile Image</button>
             </div>
             <input type="text" id="in-name" class="form-control" placeholder="Driver Full Name">
-            <input type="tel" id="in-wa" class="form-control" placeholder="WhatsApp Number">
+            <input type="tel" id="in-wa" class="form-control" placeholder="WhatsApp (082...)">
             <input type="email" id="in-email" class="form-control" placeholder="Email Address">
             <select id="in-deal" class="form-control">
-                <option value="4000">Rent-to-Own (R4,000 / R500 wk)</option>
+                <option value="4000">Rent-to-Own (R4,000 Total)</option>
                 <option value="2500">Cash Purchase (R2,500 Total)</option>
             </select>
 
             <div class="terms-container">
-                <b>FULL TERMS & CONDITIONS<br>WAARDEER HOLDINGS (PTY) LTD (ONBOARDING HUB ZA)</b><br><br>
+                <b>FULL TERMS & CONDITIONS - WAARDEER HOLDINGS (PTY) LTD</b><br><br>
                 1. INTRODUCTION: These Terms and Conditions apply to all services provided by Onboarding Hub ZA, a division of Waardeer Holdings (Pty) Ltd. By communicating with us (WhatsApp, calls, email, or forms), you agree to these Terms.<br><br>
                 2. NATURE OF SERVICE: We provide onboarding assistance and administrative support for Uber Eats account creation. We are not affiliated with Uber or Uber Eats. All account approvals are decided by the third-party platform.<br><br>
                 3. CLIENT CONSENT: By engaging with us, you agree to: Provide all required personal information and documents. Allow us to process your information for onboarding. Be recognized as a client of Waardeer Holdings (Pty) Ltd. All communication, invoices, and records serve as proof of this relationship.<br><br>
@@ -204,55 +250,51 @@
                 ✅ AGREEMENT: By continuing, you fully accept these Terms & Conditions.
             </div>
 
-            <label style="display:flex; gap:10px; font-size:0.8rem; margin-bottom:20px; line-height: 1.4; cursor:pointer;">
-                <input type="checkbox" id="in-fica" onchange="document.getElementById('btn-save').disabled = !this.checked" style="width:20px; height:20px; flex-shrink: 0;"> I confirm driver has read and accepted the Terms.
+            <label style="display:flex; gap:12px; font-size:0.8rem; margin-bottom:25px; line-height:1.5; cursor:pointer;">
+                <input type="checkbox" id="in-fica" onchange="document.getElementById('btn-save').disabled = !this.checked" style="width:20px; height:20px; flex-shrink: 0;"> 
+                I confirm the driver has read and accepted the Terms.
             </label>
             <div style="display:flex; gap:10px;">
-                <button class="btn" style="flex:1; border:1px solid var(--border); color:#fff;" onclick="closeModal('modal-add')">Cancel</button>
-                <button class="btn btn-primary" id="btn-save" style="flex:1" disabled onclick="saveDriver()">Confirm Assignment</button>
+                <button class="btn btn-outline" style="flex:1" onclick="closeModal('modal-add')">Cancel</button>
+                <button class="btn btn-primary" id="btn-save" style="flex:1" disabled onclick="saveDriver()">Confirm</button>
             </div>
         </div>
     </div>
 
-    <div id="toasts" style="position:fixed; bottom:20px; right:20px; z-index:9999;"></div>
+    <div id="toasts" style="position:fixed; bottom:25px; right:25px; z-index:10000;"></div>
 
     <script>
-        // --- LONG WHATSAPP TEMPLATES RESTORED ---
+        // --- DATA & THEMES ---
         const STAGES = [
-            { 
-                name: "Photo Approved", 
-                color: "#ff4d6d", 
-                msg: "Hi [Name], great news!\n\nYour Uber profile photo has been successfully uploaded and accepted. Let’s get you on the road! 🚀\n\nOnboardingHub ZA\n(Waardeer Holdings)" 
-            },
-            { 
-                name: "Fingerprints", 
-                color: "#ff7c3e", 
-                msg: "Hi [Name], your profile is shaping up perfectly!\n\nPlease reserve R350 to pay at Postnet/HURU and complete your fingerprint check next so we can clear the final security steps. 🔒\n\nOnboardingHub ZA\n(Waardeer Holdings)" 
-            },
-            { 
-                name: "Bag Purchase", 
-                color: "#f5c842", 
-                msg: "Hi [Name], you are officially authorized!\n\nPlease pay R800 for your bag purchase to our FNB Account: 63094968030 (Waardeer Holdings). Once paid, grab your gear and let's get ready for your first trip. 🎒\n\nOnboardingHub ZA\n(Waardeer Holdings)" 
-            },
-            { 
-                name: "Final Review", 
-                color: "#0094ff", 
-                msg: "Hi [Name], hang tight!\n\nWe are now activating your profile on the system and getting everything ready for you to roll. ⚙️\n\nOnboardingHub ZA\n(Waardeer Holdings)" 
-            },
-            { 
-                name: "ACTIVE", 
-                color: "#00c896", 
-                msg: "Hi [Name], congratulations!\n\nYour account is officially ACTIVE! Time to go online, accept trips, and start earning. Drive safely out there! 🎉\n\nOnboardingHub ZA\n(Waardeer Holdings)" 
-            }
+            { name: "Photo Approved", color: "#ff4d6d", msg: "Hi [Name], great news!\n\nYour Uber profile photo has been successfully uploaded and accepted. Let’s get you on the road! 🚀\n\nOnboardingHub ZA\n(Waardeer Holdings)" },
+            { name: "Fingerprints", color: "#ff7c3e", msg: "Hi [Name], your profile is shaping up perfectly!\n\nPlease reserve R350 to pay at Postnet/HURU and complete your fingerprint check next so we can clear the final security steps. 🔒\n\nOnboardingHub ZA\n(Waardeer Holdings)" },
+            { name: "Bag Purchase", color: "#f5c842", msg: "Hi [Name], you are officially authorized!\n\nPlease pay R800 for your bag purchase to our FNB Account: 63094968030 (Waardeer Holdings). Once paid, grab your gear and let's get ready for your first trip. 🎒\n\nOnboardingHub ZA\n(Waardeer Holdings)" },
+            { name: "Final Review", color: "#0094ff", msg: "Hi [Name], hang tight!\n\nWe are now activating your profile on the system and getting everything ready for you to roll. ⚙️\n\nOnboardingHub ZA\n(Waardeer Holdings)" },
+            { name: "ACTIVE", color: "#00c896", msg: "Hi [Name], congratulations!\n\nYour account is officially ACTIVE! Time to go online, accept trips, and start earning. Drive safely out there! 🎉\n\nOnboardingHub ZA\n(Waardeer Holdings)" }
         ];
 
-        let drivers = JSON.parse(localStorage.getItem('oh_za_v17_drv')) || [];
-        let tasks = JSON.parse(localStorage.getItem('oh_za_v17_tsk')) || [];
+        let drivers = JSON.parse(localStorage.getItem('oh_za_v18_drv')) || [];
+        let tasks = JSON.parse(localStorage.getItem('oh_za_v18_tsk')) || [];
         let currentImg = null; let activeId = null;
 
-        function save() { localStorage.setItem('oh_za_v17_drv', JSON.stringify(drivers)); localStorage.setItem('oh_za_v17_tsk', JSON.stringify(tasks)); }
+        function save() { localStorage.setItem('oh_za_v18_drv', JSON.stringify(drivers)); localStorage.setItem('oh_za_v18_tsk', JSON.stringify(tasks)); }
+        function toast(m) { const t = document.createElement('div'); t.style.background='var(--primary)'; t.style.color='#000'; t.style.padding='14px 22px'; t.style.borderRadius='14px'; t.style.marginTop='10px'; t.style.fontWeight='800'; t.innerText=m; document.getElementById('toasts').appendChild(t); setTimeout(() => t.remove(), 3000); }
 
-        // --- CORE NAVIGATION ---
+        function toggleMenu() {
+            const side = document.getElementById('sidebar');
+            const over = document.getElementById('sidebar-overlay');
+            side.classList.toggle('mobile-open');
+            over.classList.toggle('active');
+        }
+
+        function changeTheme(t) { document.body.className = t; localStorage.setItem('oh_theme', t); }
+
+        function handlePhoto(input) {
+            const reader = new FileReader();
+            reader.onload = (e) => { currentImg = e.target.result; document.getElementById('img-preview').src = currentImg; };
+            reader.readAsDataURL(input.files[0]);
+        }
+
         function switchView(v) {
             document.querySelectorAll('.view').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -261,24 +303,8 @@
             if(tv) tv.classList.add('active');
             if(tn) tn.classList.add('active');
             document.getElementById('view-title').innerText = v.toUpperCase();
-            document.getElementById('sidebar').classList.remove('mobile-open');
+            if(window.innerWidth < 850) toggleMenu();
             refresh();
-        }
-
-        // --- FINANCIAL/PAYMENTS ---
-        function togglePrivacy() { document.querySelectorAll('.rev-val').forEach(v => v.classList.toggle('hidden')); }
-        function logR500(id) {
-            const d = drivers.find(x => x.id === id);
-            d.payments = d.payments || [];
-            d.payments.push({ date: new Date().toLocaleDateString(), amount: 500 });
-            save(); openDriverPanel(id); refresh();
-        }
-
-        // --- DATA INPUT ---
-        function handlePhoto(input) {
-            const reader = new FileReader();
-            reader.onload = (e) => { currentImg = e.target.result; document.getElementById('img-preview').src = currentImg; };
-            reader.readAsDataURL(input.files[0]);
         }
 
         function saveDriver() {
@@ -287,52 +313,50 @@
                 id: Date.now(), 
                 name: document.getElementById('in-name').value, 
                 wa: document.getElementById('in-wa').value, 
-                email: document.getElementById('in-email').value,
                 rev: deal, 
                 deposit: deal === 2500 ? 1000 : 0, 
                 payments: [], 
                 photo: currentImg, 
                 stage: 0, done: false 
             });
-            save(); closeModal('modal-add'); currentImg=null; document.getElementById('img-preview').src='https://cdn-icons-png.flaticon.com/512/149/149071.png'; refresh();
+            save(); closeModal('modal-add'); currentImg=null; document.getElementById('img-preview').src='https://cdn-icons-png.flaticon.com/512/149/149071.png'; refresh(); toast("Driver Assigned!");
         }
 
         function openDriverPanel(id) {
-            activeId = id; const d = drivers.find(x => x.id === id);
+            activeId = id; const d = drivers.find(x => x.id === activeId);
             const totalPaid = (d.deposit || 0) + (d.payments || []).reduce((a,b) => a+b.amount, 0);
             const bal = d.rev - totalPaid;
             const weeks = Math.ceil(bal / 500);
 
             document.getElementById('panel-title').innerText = d.name;
             document.getElementById('panel-content').innerHTML = `
-                <div style="display:flex; gap:15px; align-items:center; margin-bottom:20px;">
-                    <img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" style="width:75px; height:75px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
-                    <div><h3 style="font-weight:800">${d.name}</h3><span style="color:var(--orange); font-size:0.75rem; font-weight:700;">Balance Due: R${bal}</span></div>
+                <div style="display:flex; gap:18px; align-items:center; margin-bottom:25px;">
+                    <img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3.5px solid var(--primary); padding:3px; background:var(--bg)">
+                    <div><h3 style="font-weight:800">${d.name}</h3><span style="color:var(--orange); font-size:0.75rem; font-weight:800; background:rgba(255,124,62,0.1); padding:4px 8px; border-radius:6px">Balance: R${bal}</span></div>
                 </div>
 
                 <div class="fin-block">
                     <div class="pay-row"><span>Business Plan:</span><b>${d.rev === 4000 ? 'Rent-to-Own' : 'Cash Deal'}</b></div>
-                    <div class="pay-row"><span>Payments Logged:</span><b class="rev-val">R${totalPaid}</b></div>
-                    <div class="pay-row" style="color:var(--orange)"><span>Weeks Remaining:</span><b>${weeks > 0 ? weeks : 'PAID'}</b></div>
-                    <button class="btn btn-primary" style="width:100%; margin-top:10px; font-size:0.75rem" onclick="logR500(${d.id})">+ Log Weekly R500 Payment</button>
+                    <div class="pay-row"><span>Installments:</span><b class="rev-val">R${totalPaid} Paid</b></div>
+                    <div class="pay-row" style="color:var(--orange)"><span>Weeks Remaining:</span><b>${weeks > 0 ? weeks + ' wks' : 'COMPLETED'}</b></div>
+                    <button class="btn btn-primary" style="width:100%; margin-top:15px; font-size:0.8rem" onclick="logPayment(${d.id})">+ Log R500 Installment</button>
                 </div>
 
-                <div style="margin-top:15px">
+                <div style="margin-top:20px">
                 ${STAGES.map((s,i) => `
-                    <div style="padding:12px; border-radius:10px; margin-bottom:8px; border:1px solid ${i <= d.stage ? 'var(--primary)' : 'var(--border)'}; opacity:${i <= d.stage ? '1' : '0.2'}; background:${i === d.stage ? 'var(--bg)' : 'transparent'}">
-                        <b>STAGE ${i+1}:</b> ${s.name}
+                    <div style="padding:15px; border-radius:14px; margin-bottom:10px; border:1px solid ${i <= d.stage ? 'var(--primary)' : 'var(--border)'}; opacity:${i <= d.stage ? '1' : '0.2'}; background:${i === d.stage ? 'var(--glass)' : 'transparent'}; font-weight:600; font-size:0.9rem">
+                        STAGE ${i+1}: ${s.name}
                     </div>
                 `).join('')}
                 </div>
 
-                <button class="btn btn-whatsapp" onclick="sendWhatsApp()">Open WhatsApp Notification 📱</button>
-                <button class="btn" style="width:100%; border:1px solid var(--border); color:#fff" onclick="window.open('${d.photo}', '_blank')">💾 Download Photo</button>
-                <button class="btn" style="width:100%; border:1px solid var(--red); color:var(--red); margin-top:20px; font-size:0.8rem" onclick="deleteDriver(${d.id})">Purge Client Records</button>
+                <button class="btn btn-whatsapp" onclick="sendWhatsApp()">Open WhatsApp Dispatch 📱</button>
+                <button class="btn" style="width:100%; border:1px solid var(--border); color:var(--text)" onclick="window.open('${d.photo}', '_blank')">💾 View Driver Photo</button>
+                <button class="btn" style="width:100%; border:1px solid var(--red); color:var(--red); margin-top:30px; font-size:0.8rem" onclick="deleteDriver(${d.id})">PURGE RECORD</button>
             `;
 
-            // FIXED FOOTER NAVIGATION
             document.getElementById('panel-footer').innerHTML = `
-                <button class="btn" style="flex:1; border:1px solid var(--border); color:#fff" onclick="moveStage(-1)">PREVIOUS</button>
+                <button class="btn" style="flex:1; border:1.5px solid var(--border); color:var(--text)" onclick="moveStage(-1)">PREVIOUS</button>
                 <button class="btn" style="flex:1; background:var(--blue); color:#fff" onclick="moveStage(1)">NEXT STAGE</button>
                 <button class="btn btn-primary" style="flex:1" onclick="markDone()">COMPLETE</button>
             `;
@@ -340,49 +364,28 @@
             document.getElementById('panel').classList.add('open');
         }
 
-        // --- STAGE NAVIGATION LOGIC ---
-        function moveStage(dir) {
-            const index = drivers.findIndex(x => x.id === activeId);
-            let target = drivers[index].stage + dir;
-            if(target >= 0 && target < STAGES.length) {
-                drivers[index].stage = target;
-                save(); refresh(); openDriverPanel(activeId);
-            }
-        }
-
-        function markDone() { const idx = drivers.findIndex(x => x.id === activeId); drivers[idx].done = true; save(); closePanel(); refresh(); }
-
-        // --- MESSAGING ---
-        function sendWhatsApp() {
-            const d = drivers.find(x => x.id === activeId);
-            let num = d.wa.replace(/\s+/g, ''); if(num.startsWith('0')) num = '27' + num.substring(1);
-            const template = STAGES[d.stage].msg;
-            const fullMsg = encodeURIComponent(template.replace("[Name]", d.name));
-            window.open(`https://wa.me/${num}?text=${fullMsg}`, '_blank');
-        }
-
-        // --- OTHERS ---
-        function addTask() {
-            const t = document.getElementById('t-text').value; const a = document.getElementById('t-assignee').value;
-            if(!t || !a) return;
-            tasks.push({ id: Date.now(), text: t, who: a, logs: [new Date().toLocaleString() + ": Task posted."] });
-            save(); refresh(); document.getElementById('t-text').value=''; document.getElementById('t-assignee').value='';
-        }
+        // --- CORE LOGIC HANDLERS ---
+        function moveStage(dir) { const i = drivers.findIndex(x => x.id === activeId); let n = drivers[i].stage + dir; if(n >= 0 && n < STAGES.length) { drivers[i].stage = n; save(); refresh(); openDriverPanel(activeId); } }
+        function logPayment(id) { const i = drivers.findIndex(x => x.id === id); drivers[i].payments = drivers[i].payments || []; drivers[i].payments.push({ date: new Date().toLocaleDateString(), amount: 500 }); save(); openDriverPanel(id); refresh(); toast("Payment Recorded"); }
+        function addTask() { const t = document.getElementById('t-text').value; const a = document.getElementById('t-assignee').value; if(!t || !a) return; tasks.push({ id: Date.now(), text: t, who: a, logs: [new Date().toLocaleString() + ": Delegation assigned."] }); save(); refresh(); document.getElementById('t-text').value=''; document.getElementById('t-assignee').value=''; }
         function openTaskPanel(id) {
             activeId = id; const t = tasks.find(x => x.id === activeId);
-            document.getElementById('panel-title').innerText = "Delegation Detail";
-            document.getElementById('panel-content').innerHTML = `<h2>${t.text}</h2><p style="color:var(--primary); font-weight:800; margin:10px 0;">Person: ${t.who}</p><div style="margin-top:20px;">${t.logs.map(l => `<div style="background:var(--border); padding:10px; border-radius:10px; margin-bottom:10px; font-size:0.8rem;">${l}</div>`).join('')}</div><textarea id="log-in" class="form-control" placeholder="Update log..." style="margin-top:20px;"></textarea><button class="btn btn-primary" style="width:100%" onclick="addLog(${t.id})">Post Update</button><button class="btn btn-danger" style="margin-top:20px" onclick="deleteTask(${t.id})">Delete Task</button>`;
-            document.getElementById('panel-footer').innerHTML = `<button class="btn btn-primary" style="width:100%" onclick="closePanel()">Finished Viewing</button>`;
+            document.getElementById('panel-title').innerText = "Delegated Project";
+            document.getElementById('panel-content').innerHTML = `<h2>${t.text}</h2><p style="color:var(--primary); font-weight:800; margin:10px 0;">Person: ${t.who}</p><div style="margin-top:20px;">${t.logs.map(l => `<div class="log-bubble"><span class="log-date">${l.split(': ')[0]}</span>${l.split(': ').slice(1).join(': ')}</div>`).join('')}</div><textarea id="log-in" class="form-control" placeholder="Write update..." style="margin-top:20px;"></textarea><button class="btn btn-primary" onclick="addLog(${t.id})">Post Update</button><button class="btn btn-danger" style="margin-top:25px" onclick="deleteTask(${t.id})">Delete Task</button>`;
+            document.getElementById('panel-footer').innerHTML = `<button class="btn btn-primary" style="width:100%" onclick="closePanel()">Finish Viewing</button>`;
             document.getElementById('panel').classList.add('open');
         }
         function addLog(id) { const v = document.getElementById('log-in').value; if(!v) return; tasks.find(x=>x.id===id).logs.push(new Date().toLocaleString() + ": " + v); save(); openTaskPanel(id); }
-        function deleteDriver(id) { if(confirm("Delete Client?")) { drivers = drivers.filter(x=>x.id!==id); save(); closePanel(); refresh(); } }
-        function deleteTask(id) { if(confirm("Delete Task?")) { tasks = tasks.filter(x=>x.id!==id); save(); closePanel(); refresh(); } }
+        function markDone() { const idx = drivers.findIndex(x => x.id === activeId); drivers[idx].done = true; save(); closePanel(); refresh(); toast("Mission Successful! 🎉"); }
+        function sendWhatsApp() { const d = drivers.find(x => x.id === activeId); let num = d.wa.replace(/\s+/g, ''); if(num.startsWith('0')) num = '27' + num.substring(1); const msg = encodeURIComponent(STAGES[d.stage].msg.replace("[Name]", d.name)); window.open(`https://wa.me/${num}?text=${msg}`, '_blank'); }
+        function deleteDriver(id) { if(confirm("Delete Permanently?")) { drivers = drivers.filter(x=>x.id!==id); save(); closePanel(); refresh(); } }
+        function deleteTask(id) { if(confirm("Remove?")) { tasks = tasks.filter(x=>x.id!==id); save(); closePanel(); refresh(); } }
+        function togglePrivacy() { document.querySelectorAll('.rev-val').forEach(v => v.classList.toggle('hidden')); }
         function openModal(id) { document.getElementById(id).style.display='flex'; }
         function closeModal(id) { document.getElementById(id).style.display='none'; }
         function closePanel() { document.getElementById('panel').classList.remove('open'); }
-        function exportData() { prompt("Your Cloud Sync Key:", btoa(JSON.stringify({d:drivers,t:tasks}))); }
-        function importData() { const k = prompt("Paste Sync Key:"); if(k) { try { const obj=JSON.parse(atob(k)); drivers=obj.d; tasks=obj.t; save(); location.reload(); } catch(e){ alert("Invalid Key"); }} }
+        function exportData() { prompt("Your Cloud Data Key (COPY THIS):", btoa(JSON.stringify({d:drivers,t:tasks}))); }
+        function importData() { const k = prompt("Paste Your Cloud Key:"); if(k) { try { const o=JSON.parse(atob(k)); drivers=o.d; tasks=o.t; save(); location.reload(); } catch(e){ alert("Invalid Key"); }} }
 
         function refresh() {
             const active = drivers.filter(d => !d.done).length; const rev = drivers.reduce((a, b) => a + b.rev, 0);
@@ -391,11 +394,17 @@
                 document.getElementById('rev-total-big').innerText = "R" + rev.toLocaleString();
                 document.getElementById('revenue-log').innerHTML = drivers.map(d => `<div class="card" onclick="openDriverPanel(${d.id})"><div style="flex:1"><b>${d.name}</b><br><small>${d.rev === 4000 ? 'Rent-to-Own' : 'Cash Deal'}</small></div><span class="rev-val" style="font-weight:800; color:var(--primary)">R${d.rev}</span></div>`).join('');
             }
-            document.getElementById('recent-list').innerHTML = drivers.slice(-6).reverse().map(d => `<div class="card" onclick="openDriverPanel(${d.id})"><img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="driver-img-sm"><div style="flex:1"><b>${d.name}</b><br><small style="color:var(--dim)">${STAGES[d.stage].name}</small></div></div>`).join('');
-            document.getElementById('task-list').innerHTML = tasks.map(t => `<div class="card" onclick="openTaskPanel(${t.id})"><div><b>${t.text}</b><br><small style="color:var(--primary)">${t.who}</small></div></div>`).join('');
-            document.getElementById('pipe-area').innerHTML = STAGES.map((s,i) => `<div class="pipe-col"><div style="color:${s.color}; font-weight:800; margin-bottom:12px; border-bottom:1px solid var(--border); padding-bottom:10px;">${s.name}</div>${drivers.filter(d => d.stage === i && !d.done).map(d => `<div class="card" style="padding:10px; font-size:0.8rem;" onclick="openDriverPanel(${d.id})">${d.name}</div>`).join('')}</div>`).join('');
+            document.getElementById('recent-list').innerHTML = drivers.slice(-8).reverse().map(d => `<div class="card" onclick="openDriverPanel(${d.id})"><img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="driver-img-sm"><div style="flex:1"><b>${d.name}</b><br><small style="color:var(--dim)">Currently: ${STAGES[d.stage].name}</small></div></div>`).join('');
+            document.getElementById('task-list').innerHTML = tasks.map(t => `<div class="card" onclick="openTaskPanel(${t.id})"><div><b>${t.text}</b><br><small style="color:var(--primary)">Responsible: ${t.who}</small></div></div>`).join('');
+            document.getElementById('pipe-area').innerHTML = STAGES.map((s,i) => `<div class="pipe-col"><div style="color:${s.color}; font-weight:800; margin-bottom:12px; border-bottom:2px solid var(--border); padding-bottom:8px; font-size:0.8rem;">${s.name.toUpperCase()}</div>${drivers.filter(d => d.stage === i && !d.done).map(d => `<div class="card" style="padding:10px; font-size:0.85rem;" onclick="openDriverPanel(${d.id})">${d.name}</div>`).join('')}</div>`).join('');
         }
-        window.onload = refresh;
+        
+        window.onload = () => { 
+            const savedTheme = localStorage.getItem('oh_theme');
+            if(savedTheme) document.body.className = savedTheme;
+            refresh(); 
+        };
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('sw.js')); }
     </script>
 </body>
-                </html>
+    </html>
