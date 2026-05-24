@@ -1,4 +1,4 @@
-const CACHE_NAME = 'oh-za-v14-fixed';
+const CACHE_NAME = 'oh-za-v15';
 
 self.addEventListener('install', (e) => {
   self.skipWaiting();
