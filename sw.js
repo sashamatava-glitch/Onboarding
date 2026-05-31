@@ -1,4 +1,4 @@
-const CACHE_NAME = 'oh-za-v22';
+const CACHE_NAME = 'oh-za-v23';
 
 const assets = [
   './',
@@ -25,7 +25,5 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // Allow external libraries to load
-  if (e.request.url.includes('cdnjs.cloudflare.com')) return;
   e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
 });
