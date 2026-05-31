@@ -3,85 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Onboarding Hub ZA | Waardeer Holdings</title>
+    <title>Onboarding Hub ZA | Enterprise v22</title>
     
-    <!-- PWA -->
     <meta name="theme-color" content="#0d0f14">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="logo.png">
 
-    <!-- Professional Tech Fonts -->
+    <!-- Professional Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
     
-    <!-- PDF Generation Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         :root {
             --bg: #0d0f14; --surface: #161a22; --border: #2a2f3d;
-            --text: #fdfdfd; --dim: #94a3b8;
-            --primary: #00c896; --blue: #0094ff; --orange: #fb923c;
+            --text: #ffffff; --dim: #94a3b8;
+            --primary: #00c896; --blue: #0094ff; --orange: #ff7c3e;
             --red: #ff4d6d; --whatsapp: #25d366;
-            --sidebar-w: 280px;
-            --radius: 14px;
+            --sidebar-w: 260px;
         }
 
-        /* Pure Corporate Aesthetic */
+        body.theme-white { --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0; --text: #0f172a; --dim: #64748b; }
+
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'Public Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
-
-        /* THEMES */
-        body.theme-white { --bg: #f1f5f9; --surface: #ffffff; --border: #cbd5e1; --text: #0f172a; --dim: #64748b; }
-
-        /* SIDEBAR */
+        
+        /* Sidebar Navigation */
         #sidebar { width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .sidebar-brand { padding: 30px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 15px; }
-        .sidebar-brand img { width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--primary); }
-        .nav-item { padding: 14px 20px; cursor: pointer; color: var(--dim); border-radius: 10px; margin: 4px 12px; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
-        .nav-item.active { background: var(--primary); color: #000; }
+        .sidebar-brand { padding: 25px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .sidebar-brand img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); object-fit: cover; }
+        .nav-item { padding: 14px 20px; cursor: pointer; color: var(--dim); border-radius: 12px; margin: 4px 12px; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
+        .nav-item.active { background: var(--primary); color: #000; font-weight: 700; }
         .sidebar-footer { margin-top: auto; padding: 20px; border-top: 1px solid var(--border); text-align: center; }
 
-        /* MAIN APP AREA */
+        /* Main View Container */
         #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        #topbar { height: 75px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
-        .view { padding: 20px; flex: 1; overflow-y: auto; display: none; }
-        .view.active { display: block; animation: fadeInUp 0.4s ease; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        #topbar { height: 70px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
+        .view { padding: 25px; flex: 1; overflow-y: auto; display: none; }
+        .view.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* CARDS & COMPONENTS */
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
-        .stat-card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-radius: var(--radius); }
-        .stat-card h4 { font-size: 0.6rem; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-        .stat-card .val { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+        /* Stats & Card UI */
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stat-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 22px; border-radius: 20px; }
+        .stat-card h4 { font-size: 0.65rem; color: var(--dim); text-transform: uppercase; letter-spacing: 1.5px; }
+        .stat-card .val { font-size: 1.8rem; font-weight: 800; color: var(--primary); font-family: 'Syne'; }
+        
+        .card { background: var(--surface); border: 1px solid var(--border); padding: 18px; border-radius: 18px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: 0.2s; }
+        .card:hover { border-color: var(--primary); transform: translateX(5px); }
+        .driver-img-sm { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2.5px solid var(--border); background: #000; }
 
-        .card { background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: var(--radius); margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.3s; }
-        .card:hover { border-color: var(--primary); transform: translateX(4px); }
-        .driver-img-sm { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--border); background: #000; }
+        /* Finance Engine */
+        .rev-val.hidden { filter: blur(12px); pointer-events: none; }
+        .eye-btn { padding: 8px 14px; border-radius: 12px; font-size: 0.75rem; color: var(--primary); font-weight: 800; cursor: pointer; border: 1px solid var(--primary); background: rgba(0,200,150,0.05); }
+        .payment-pill { background: rgba(0,0,0,0.4); padding: 20px; border-radius: 20px; border-left: 5px solid var(--primary); margin: 20px 0; }
 
-        .rev-val.hidden { filter: blur(10px); }
-        .eye-toggle { background: var(--border); padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; color: var(--primary); font-weight: bold; cursor: pointer; }
-
-        /* BUTTONS */
-        .btn { padding: 12px 20px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-family: inherit; transition: 0.2s; font-size: 0.9rem; }
-        .btn-primary { background: var(--primary); color: #000; width: 100%; box-shadow: 0 4px 20px rgba(0,200,150,0.25); }
+        /* Buttons & Forms */
+        .btn { padding: 14px 22px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-family: inherit; transition: 0.2s; font-size: 0.95rem; }
+        .btn-primary { background: var(--primary); color: #000; box-shadow: 0 4px 15px rgba(0,200,150,0.3); }
+        .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
         .btn-whatsapp { background: var(--whatsapp); color: #fff; width: 100%; margin: 15px 0; }
-        .btn-share { background: var(--blue); color: #fff; width: 100%; }
+        .btn-danger { background: rgba(255, 77, 109, 0.1); color: var(--red); border: 1.5px solid var(--red); width: 100%; margin-top: 30px; }
+        .form-control { width: 100%; padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff; border-radius: 14px; margin-bottom: 12px; font-family: inherit; outline: none; }
 
-        /* PANEL */
-        #panel { position: fixed; top: 0; right: -100%; width: 500px; height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 5000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; }
+        /* PDF Invoicing */
+        .invoice-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+        .invoice-paper { background: #fff; color: #000; width: 100%; max-width: 600px; padding: 40px; border-radius: 4px; font-size: 13px; line-height: 1.6; }
+        .inv-header { display: flex; justify-content: space-between; border-bottom: 3px solid #f0f0f0; padding-bottom: 25px; margin-bottom: 25px; }
+        .inv-title { color: #00c896; font-size: 2.2rem; font-weight: 800; font-family: 'Syne'; margin: 0; }
+        .inv-table { width: 100%; border-collapse: collapse; margin: 30px 0; }
+        .inv-table th { background: #f8f8f8; text-align: left; padding: 12px; font-weight: 700; border-bottom: 2px solid #eee; }
+        .inv-table td { padding: 12px; border-bottom: 1px solid #f0f0f0; }
+
+        /* Panel Slide-In */
+        #panel { position: fixed; top: 0; right: -100%; width: 500px; height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 5000; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; box-shadow: -20px 0 60px rgba(0,0,0,0.6); }
         #panel.open { right: 0; }
-        .panel-content { padding: 25px; overflow-y: auto; flex: 1; }
-        .panel-footer { padding: 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: var(--surface); }
+        .panel-content { padding: 30px; overflow-y: auto; flex: 1; }
+        .panel-footer { padding: 25px; border-top: 1px solid var(--border); display: flex; gap: 12px; background: var(--surface); }
 
-        /* INVOICE PREVIEW */
-        .invoice-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
-        .invoice-paper { background: #fff; color: #000; width: 100%; max-width: 500px; padding: 30px; border-radius: 4px; font-size: 11px; }
-
-        .terms-container { background: #000; border: 1px solid var(--border); padding: 15px; border-radius: var(--radius); height: 160px; overflow-y: auto; font-size: 0.75rem; color: var(--dim); line-height: 1.6; margin-bottom: 20px; }
+        .terms-box { background: #000; border: 1px solid var(--border); padding: 20px; border-radius: 16px; height: 200px; overflow-y: auto; font-size: 0.8rem; color: var(--dim); line-height: 1.7; margin-bottom: 20px; }
 
         @media (max-width: 850px) {
             #sidebar { position: fixed; height: 100vh; transform: translateX(-100%); }
@@ -96,9 +100,9 @@
     <div id="sidebar">
         <div class="sidebar-brand" onclick="switchView('dashboard')">
             <img src="logo.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1162/1162456.png'">
-            <div style="line-height: 1.2">
-                <h2 style="font-weight:900; font-size:1rem; letter-spacing: -0.5px;">ONBOARDING HUB</h2>
-                <span style="font-size: 0.6rem; color:var(--dim); font-weight: 700;">WAARDEER HOLDINGS</span>
+            <div style="line-height: 1.1">
+                <h2 style="font-weight:800; font-size:1.1rem; color:var(--primary)">HUB ZA</h2>
+                <span style="font-size:0.6rem; color:var(--dim); text-transform: uppercase;">Waardeer Fleet</span>
             </div>
         </div>
         <div style="padding-top: 15px; flex: 1;">
@@ -106,148 +110,148 @@
             <div id="nav-pipeline" class="nav-item" onclick="switchView('pipeline')">📋 Pipeline Board</div>
             <div id="nav-revenue" class="nav-item" onclick="switchView('revenue')">💰 Revenue Tracker</div>
             <div id="nav-tasks" class="nav-item" onclick="switchView('tasks')">✅ Delegation Hub</div>
-            <div id="nav-settings" class="nav-item" onclick="switchView('settings')">⚙️ Theme & Sync</div>
+            <div id="nav-settings" class="nav-item" onclick="switchView('settings')">⚙️ App Settings</div>
         </div>
         <div class="sidebar-footer">
-            <button class="btn btn-primary" onclick="openModal('modal-add')">+ Assign New Driver</button>
+            <button class="btn btn-primary" onclick="openModal('modal-add')">+ Assign Driver</button>
         </div>
     </div>
 
-    <!-- MAIN APP -->
+    <!-- MAIN APP AREA -->
     <div id="main">
         <div id="topbar">
             <div style="display: flex; align-items: center; gap: 15px;">
                 <button class="btn" style="background:transparent; color:var(--text); font-size:24px;" onclick="document.getElementById('sidebar').classList.toggle('mobile-open')">☰</button>
                 <h3 id="view-title" style="font-weight:800; font-size:1.1rem;">DASHBOARD</h3>
             </div>
-            <div class="eye-toggle" onclick="toggleRev()">👁️ Hide Revenue</div>
+            <div class="eye-btn" onclick="togglePrivacy()">👁️ Toggle Privacy</div>
         </div>
 
+        <!-- VIEWS -->
         <div id="view-dashboard" class="view active">
             <div class="stat-grid">
-                <div class="stat-card"><h4>ACTIVE</h4><div class="val" id="st-active">0</div></div>
-                <div class="stat-card"><h4>CASH VALUE</h4><div class="val rev-val" id="st-rev">R0</div></div>
+                <div class="stat-card"><h4>FLEET SIZE</h4><div class="val" id="stat-active">0</div></div>
+                <div class="stat-card"><h4>TOTAL REV</h4><div class="val rev-val" id="stat-rev">R0</div></div>
             </div>
-            <h4 style="margin-bottom:15px; font-weight:700;">Recent Fleet Movements</h4>
+            <h4 style="margin-bottom:15px; color:var(--dim); font-weight:700;">RECENT OPERATIONS</h4>
             <div id="recent-list"></div>
         </div>
 
-        <!-- REVENUE LOG -->
         <div id="view-revenue" class="view">
-            <div class="stat-card" style="margin-bottom:20px; text-align:center;">
-                <h4>Company Total Projected Portfolio</h4>
-                <div class="val rev-val" id="rev-total-big" style="font-size:2.8rem;">R0</div>
+            <div class="stat-card" style="margin-bottom:25px; text-align:center; background: linear-gradient(135deg, var(--surface), var(--bg));">
+                <h4>Company Portfolio Value</h4>
+                <div class="val rev-val" id="rev-total-big" style="font-size:3.2rem;">R0</div>
             </div>
             <div id="revenue-log"></div>
         </div>
 
-        <!-- DELEGATION LOGIC -->
         <div id="view-tasks" class="view">
-            <div style="background:var(--surface); padding:20px; border-radius:var(--radius); border:1px solid var(--border); margin-bottom:20px;">
-                <input type="text" id="t-text" class="form-control" style="width:100%; padding:14px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:#fff; border-radius:10px; margin-bottom:10px;" placeholder="Task description">
-                <input type="text" id="t-assignee" class="form-control" style="width:100%; padding:14px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:#fff; border-radius:10px; margin-bottom:10px;" placeholder="Person Responsible">
-                <button class="btn btn-primary" onclick="addTask()">Delegate Mission</button>
+            <div style="background:var(--surface); padding:25px; border-radius:24px; border:1px solid var(--border); margin-bottom:25px;">
+                <input type="text" id="t-text" class="form-control" placeholder="Task description">
+                <input type="text" id="t-assignee" class="form-control" placeholder="Responsible name">
+                <button class="btn btn-primary" style="width:100%" onclick="addTask()">Delegate Project</button>
             </div>
             <div id="task-list"></div>
         </div>
 
-        <!-- SYNC & SETTINGS -->
         <div id="view-settings" class="view">
-            <div class="stat-card" style="margin-bottom:20px;">
-                <h4>Cloud Data Handshake</h4>
-                <div style="display:flex; gap:10px; margin-top:15px;">
-                    <button class="btn btn-primary" style="flex:1" onclick="exportData()">💾 Export Key</button>
-                    <button class="btn btn-primary" style="flex:1" onclick="importData()">📲 Import Key</button>
+            <div class="stat-card" style="margin-bottom:30px;">
+                <h4>Sync Management</h4>
+                <div style="display:flex; gap:12px; margin-top:15px;">
+                    <button class="btn btn-outline" style="flex:1" onclick="exportData()">💾 Export Key</button>
+                    <button class="btn btn-outline" style="flex:1" onclick="importData()">📲 Import Key</button>
                 </div>
             </div>
-            <h4>Themes</h4>
-            <select class="form-control" style="width:100%; padding:14px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:#fff; border-radius:10px; margin-top:10px;" onchange="document.body.className = this.value">
-                <option value="theme-default">Dark Platinum</option>
-                <option value="theme-white">Professional White</option>
+            <h4>Appearance</h4>
+            <select class="form-control" style="margin-top:10px" onchange="document.body.className = this.value">
+                <option value="theme-default">Corporate Dark</option>
+                <option value="theme-white">Pro White</option>
             </select>
+            <button class="btn btn-danger" onclick="location.reload()">🔒 Secure Force Reload</button>
         </div>
 
         <div id="view-pipeline" class="view"><div style="display:flex; gap:15px; overflow-x:auto; padding-bottom:30px;" id="pipe-area"></div></div>
+        <div id="view-all" class="view"><div id="all-list"></div></div>
     </div>
 
     <!-- DETAIL PANEL -->
     <div id="panel">
-        <div style="padding:20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-            <h3 id="panel-title" style="font-weight:900;">Identity Profile</h3>
-            <button onclick="closePanel()" style="background:none; border:none; color:var(--text); font-size:30px;">✕</button>
+        <div style="padding:25px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+            <h3 id="panel-title" style="font-family:'Syne'">Client Identity</h3>
+            <button onclick="closePanel()" style="background:none; border:none; color:var(--text); font-size:32px;">✕</button>
         </div>
         <div class="panel-content" id="panel-content"></div>
         <div id="panel-footer" class="panel-footer"></div>
     </div>
 
-    <!-- INVOICE SYSTEM -->
+    <!-- PDF INVOICE MODAL -->
     <div id="modal-invoice" class="invoice-modal">
-        <div id="invoice-capture" class="invoice-paper">
-            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                <img src="logo.png" style="width:60px; border-radius:50%;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1162/1162456.png'">
-                <div style="text-align:right;">
-                    <h2 style="font-weight:900;">INVOICE</h2>
-                    <p id="inv-no">#INV-0000</p>
-                    <p id="inv-date">00/00/2000</p>
+        <div class="invoice-paper" id="invoice-render">
+            <div class="inv-header">
+                <div>
+                    <img src="logo.png" style="width:80px; border-radius:50%;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1162/1162456.png'">
+                    <h2 style="font-weight:800; margin-top:10px">Waardeer Holdings (Pty) Ltd</h2>
+                    <p style="font-size:0.75rem; color:#666">Reg: 2024/160585/07</p>
+                </div>
+                <div style="text-align:right">
+                    <h1 class="inv-title">INVOICE</h1>
+                    <p id="inv-no" style="font-weight:700">#INV-000</p>
+                    <p id="inv-date">00/00/0000</p>
                 </div>
             </div>
-            <h4 style="margin-bottom:5px;">Waardeer Holdings (Pty) Ltd</h4>
-            <p>Reg: 2024/160585/07</p>
-            <hr style="margin:15px 0; opacity:0.1">
-            <div style="margin-bottom:20px">
-                <b>BILL TO:</b>
-                <h3 id="inv-name" style="font-weight:900; margin:5px 0;">Client Name</h3>
+            <div style="margin-bottom:30px">
+                <b>BILL TO CLIENT:</b>
+                <h3 id="inv-name" style="font-weight:900; margin:5px 0">Name</h3>
                 <p id="inv-wa">WhatsApp Contact</p>
             </div>
-            <table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
-                <tr style="border-bottom:2px solid #00c896; text-align:left;">
-                    <th style="padding:10px 0;">DESCRIPTION</th>
-                    <th style="text-align:right;">AMOUNT (ZAR)</th>
-                </tr>
-                <tr><td id="inv-desc" style="padding:10px 0;">Service Fee Package</td><td id="inv-price" style="text-align:right;">R0.00</td></tr>
-                <tr style="background:#f0fff4;"><td style="padding:10px; font-weight:bold;">DEPOSIT RECEIVED:</td><td id="inv-deposit" style="text-align:right; font-weight:bold; color:red;">- R0.00</td></tr>
-                <tr style="background:#00c896; color:#fff;"><td style="padding:10px; font-weight:bold;">BALANCE DUE:</td><td id="inv-balance" style="text-align:right; font-weight:900;">R0.00</td></tr>
+            <table class="inv-table">
+                <thead><tr><th>SERVICE DESCRIPTION</th><th style="text-align:right">ZAR</th></tr></thead>
+                <tbody>
+                    <tr><td>Uber Eats Onboarding Admin</td><td id="inv-p-total" style="text-align:right; font-weight:700">R0.00</td></tr>
+                    <tr style="background:#fef2f2"><td style="text-align:right">DEPOSIT RECEIVED:</td><td id="inv-p-deposit" style="text-align:right; color:red; font-weight:700">- R0.00</td></tr>
+                    <tr style="background:#f0fdf4"><td style="text-align:right"><b>GRAND TOTAL BALANCE DUE:</b></td><td id="inv-p-balance" style="text-align:right; color:#059669; font-weight:900">R0.00</td></tr>
+                </tbody>
             </table>
-            <div style="background:#fafafa; padding:15px; border-radius:5px; font-size:9px;">
-                <b>FNB BANKING:</b> Waardeer Holdings | Acc: 63094968030 | Use Client Name as Reference.
+            <div style="margin-top:30px; border-left:4px solid #00c896; padding:15px; background:#fafafa; font-size:10px">
+                <p><b>FNB BANKING:</b> Waardeer Holdings | Acc: 63094968030 | Acc Type: Business</p>
+                <p style="margin-top:5px">Ref: Driver Full Legal Name</p>
             </div>
         </div>
-        <div style="display:flex; gap:10px; width:100%; max-width:500px; padding-top:20px;">
-            <button class="btn btn-primary" style="flex:1; background:#fff; color:#000;" onclick="closeModal('modal-invoice')">CANCEL</button>
-            <button class="btn btn-primary" style="flex:2" onclick="shareInvoicePDF()">🚀 SHARE AS PDF TO CLIENT</button>
+        <div style="display:flex; gap:12px; padding:20px; width:100%; max-width:500px">
+            <button class="btn btn-outline" style="flex:1; background:#fff; color:#000" onclick="closeModal('modal-invoice')">CANCEL</button>
+            <button class="btn btn-primary" style="flex:2" onclick="sharePDF()">🚀 SHARE TO WHATSAPP</button>
         </div>
     </div>
 
-    <!-- MODAL: ASSIGN -->
-    <div id="modal-add" style="position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:9000; display:none; align-items:center; justify-content:center; padding:20px;">
-        <div style="background:var(--surface); width:100%; max-width:500px; border-radius:24px; padding:35px; border:1px solid var(--border); max-height:92vh; overflow-y:auto;">
-            <h3 style="margin-bottom:25px; font-weight:900;">Onboard New Profile</h3>
+    <!-- MODAL: ADD -->
+    <div id="modal-add" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:9000; display:none; align-items:center; justify-content:center; padding:20px;">
+        <div style="background:var(--surface); width:100%; max-width:500px; border-radius:24px; padding:35px; border:1px solid var(--border); max-height:95vh; overflow-y:auto;">
+            <h2 style="margin-bottom:25px; font-weight:800;">New Driver Assignment</h2>
             <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:20px;">
-                <img id="img-preview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid var(--primary);">
+                <img id="img-preview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid var(--primary); padding:3px; background:var(--bg)">
                 <input type="file" id="in-photo" accept="image/*" style="display:none;" onchange="handlePhoto(this)">
-                <button class="btn" style="color:var(--primary); font-size:0.75rem; margin-top:10px;" onclick="document.getElementById('in-photo').click()">📸 Set Identity Photo</button>
+                <button class="btn" style="color:var(--primary); font-size:0.75rem; margin-top:10px" onclick="document.getElementById('in-photo').click()">📸 Set Identity Photo</button>
             </div>
-            <input type="text" id="in-name" class="form-control" style="width:100%; padding:14px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:#fff; border-radius:10px; margin-bottom:10px;" placeholder="Full Legal Name">
-            <input type="tel" id="in-wa" class="form-control" style="width:100%; padding:14px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:#fff; border-radius:10px; margin-bottom:10px;" placeholder="WhatsApp Number">
-            <input type="email" id="in-email" class="form-control" style="width:100%; padding:14px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:#fff; border-radius:10px; margin-bottom:10px;" placeholder="Driver Email Address">
-            <select id="in-deal" class="form-control" style="width:100%; padding:14px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:#fff; border-radius:10px; margin-bottom:10px;" onchange="updateDepositOptions(this.value)">
-                <option value="4000">Rent-to-Own Deal (R4,000)</option>
-                <option value="2500">Cash Deal Package (R2,500)</option>
+            <input type="text" id="in-name" class="form-control" placeholder="Full Name">
+            <input type="tel" id="in-wa" class="form-control" placeholder="WhatsApp (082...)">
+            <select id="in-deal" class="form-control" onchange="updateDepOptions(this.value)">
+                <option value="4000">Rent-to-Own Deal (R4,000 Total)</option>
+                <option value="2500">Cash Purchase Deal (R2,500 Total)</option>
             </select>
-            <select id="in-dep" class="form-control" style="width:100%; padding:14px; background:rgba(0,0,0,0.3); border:1px solid var(--border); color:#fff; border-radius:10px; margin-bottom:10px;"></select>
-
-            <div class="terms-container">
-                <b>FULL TERMS & CONDITIONS - WAARDEER HOLDINGS (PTY) LTD</b><br><br>
-                1. INTRODUCTION: Agree to terms via communication.<br>
-                2. SERVICE: Assistance for Uber Eats onboarding only. We are not Uber.<br>
-                3. PAYMENTS: 80% non-refundable once started.<br>
-                4. NO GUARANTEE: Approval is decided by Uber platform.<br>
-                5. POPIA: Data used only for KYC/onboarding verification.<br><br>
-                ✅ BY TICKING, YOU FULLY AGREE.
+            <select id="in-dep" class="form-control"></select>
+            <div class="terms-box">
+                <b>FULL TERMS & CONDITIONS - WAARDEER HOLDINGS (PTY) LTD (ONBOARDING HUB ZA)</b><br><br>
+                1. INTRODUCTION: These Terms apply to all Onboarding Hub services. By communicating with us, you agree.<br><br>
+                2. NATURE: Assistance for Uber Eats onboarding. Not affiliated with Uber.<br><br>
+                3. CLIENT CONSENT: Recognize Waardeer Holdings as the provider.<br><br>
+                4. RESPONSIBILITY: Confirm accuracy of all provided documents.<br><br>
+                5. PAYMENTS: 80% non-refundable once started.<br><br>
+                6. NO GUARANTEE: Final decision lies with Uber platform.<br><br>
+                7. POPIA: Driver data used for KYC/onboarding purposes only.<br><br>
+                ✅ BY TICKING, YOU FULLY AGREE TO THESE TERMS.
             </div>
-
-            <label style="display:flex; gap:12px; font-size:0.8rem; margin-bottom:25px; cursor:pointer;">
-                <input type="checkbox" id="in-fica" onchange="document.getElementById('btn-save').disabled = !this.checked" style="width:20px; height:20px; flex-shrink:0;"> I Confirm Client accepted Full T&Cs.
+            <label style="display:flex; gap:12px; font-size:0.8rem; margin-bottom:25px; line-height:1.5; cursor:pointer;">
+                <input type="checkbox" id="in-fica" onchange="document.getElementById('btn-save').disabled = !this.checked" style="width:22px; height:22px; flex-shrink: 0;"> Driver agrees to all Terms.
             </label>
             <div style="display:flex; gap:10px;">
                 <button class="btn btn-outline" style="flex:1" onclick="closeModal('modal-add')">CANCEL</button>
@@ -267,113 +271,83 @@
             { name: "ACTIVE", color: "#00c896", msg: "Hi [Name], congratulations!\n\nYour account is officially ACTIVE! Time to go online, accept trips, and start earning. Drive safely out there! 🎉\n\nOnboardingHub ZA\n(Waardeer Holdings)" }
         ];
 
-        let drivers = JSON.parse(localStorage.getItem('oh_za_v21_drv')) || [];
-        let tasks = JSON.parse(localStorage.getItem('oh_za_v21_tsk')) || [];
+        let drivers = JSON.parse(localStorage.getItem('oh_za_v22_drv')) || [];
+        let tasks = JSON.parse(localStorage.getItem('oh_za_v22_tsk')) || [];
         let currentImg = null; let activeId = null;
 
-        function save() { localStorage.setItem('oh_za_v21_drv', JSON.stringify(drivers)); localStorage.setItem('oh_za_v21_tsk', JSON.stringify(tasks)); }
+        function save() { localStorage.setItem('oh_za_v22_drv', JSON.stringify(drivers)); localStorage.setItem('oh_za_v22_tsk', JSON.stringify(tasks)); }
 
-        // --- PDF SHARE LOGIC ---
-        async function shareInvoicePDF() {
+        // --- NEW PDF SHARE ---
+        async function sharePDF() {
             const d = drivers.find(x => x.id === activeId);
-            const canvas = await html2canvas(document.querySelector("#invoice-capture"));
-            const imgData = canvas.toDataURL("image/png");
-            
+            const canvas = await html2canvas(document.querySelector("#invoice-render"), { scale: 2 });
+            const imgData = canvas.toDataURL("image/jpeg", 0.9);
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
-            const imgWidth = 210;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-            
-            const pdfBlob = doc.output('blob');
-            const fileName = `INV-${d.id.toString().slice(-4)}-${d.name}.pdf`;
-            const file = new File([pdfBlob], fileName, { type: 'application/pdf' });
-
-            if (navigator.share && navigator.canShare({ files: [file] })) {
-                navigator.share({
-                    files: [file],
-                    title: 'Service Invoice',
-                    text: `Invoice for ${d.name}`
-                });
-            } else {
-                alert("Auto-Sharing not supported. It has been saved to your downloads.");
-                doc.save(fileName);
-            }
+            doc.addImage(imgData, 'JPEG', 0, 0, 210, (canvas.height * 210) / canvas.width);
+            const blob = doc.output('blob');
+            const file = new File([blob], `INV-${d.id}-${d.name}.pdf`, { type: 'application/pdf' });
+            if (navigator.share) {
+                await navigator.share({ files: [file], title: 'Invoice', text: `Here is the invoice for ${d.name}` });
+            } else { doc.save(`Invoice_${d.name}.pdf`); }
         }
 
-        // --- RENDER FUNCTIONS ---
-        function triggerInvoice(id) {
-            const d = drivers.find(x => x.id === id);
-            document.getElementById('inv-no').innerText = `#INV-${d.id.toString().slice(-4)}`;
-            document.getElementById('inv-date').innerText = new Date().toLocaleDateString();
-            document.getElementById('inv-name').innerText = d.name;
-            document.getElementById('inv-wa').innerText = d.wa;
-            document.getElementById('inv-desc').innerText = d.rev === 4000 ? "Onboarding: Rent-to-Own Plan" : "Onboarding: Cash Purchase Plan";
-            document.getElementById('inv-price').innerText = `R${d.rev.toLocaleString()}.00`;
-            document.getElementById('inv-deposit').innerText = `- R${d.deposit.toLocaleString()}.00`;
-            document.getElementById('inv-balance').innerText = `R${(d.rev - d.deposit).toLocaleString()}.00`;
-            openModal('modal-invoice');
-        }
-
+        // --- UI ---
+        function updateDepOptions(v) { document.getElementById('in-dep').innerHTML = v === "4000" ? '<option value="500">R500 Standard RTO Deposit</option>' : '<option value="1000">R1000 Cash Deposit</option><option value="1500">R1500 Full Cash Payment</option>'; }
+        function handlePhoto(i) { const r = new FileReader(); r.onload = (e) => { currentImg = e.target.result; document.getElementById('img-preview').src = currentImg; }; r.readAsDataURL(i.files[0]); }
+        function switchView(v) { document.querySelectorAll('.view').forEach(c => c.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.getElementById(`view-${v}`).classList.add('active'); document.getElementById(`nav-${v}`).classList.add('active'); document.getElementById('sidebar').classList.remove('mobile-open'); refresh(); }
+        function saveDriver() { drivers.push({ id: Date.now(), name: document.getElementById('in-name').value, wa: document.getElementById('in-wa').value, rev: parseInt(document.getElementById('in-deal').value), deposit: parseInt(document.getElementById('in-dep').value), payments: [], photo: currentImg, stage: 0, done: false }); save(); closeModal('modal-add'); refresh(); }
+        function genInv(id) { const d = drivers.find(x => x.id === id); document.getElementById('inv-no').innerText = `#INV-${d.id.toString().slice(-4)}`; document.getElementById('inv-date').innerText = new Date().toLocaleDateString(); document.getElementById('inv-name').innerText = d.name; document.getElementById('inv-wa').innerText = d.wa; document.getElementById('inv-p-total').innerText = `R${d.rev.toLocaleString()}`; document.getElementById('inv-p-deposit').innerText = `- R${d.deposit.toLocaleString()}`; document.getElementById('inv-p-balance').innerText = `R${(d.rev - d.deposit).toLocaleString()}`; openModal('modal-invoice'); }
+        
         function openDriverPanel(id) {
             activeId = id; const d = drivers.find(x => x.id === activeId);
             const totalP = (d.deposit || 0) + (d.payments || []).reduce((a,b) => a+b.amount, 0);
-            const bal = d.rev - totalP;
-
             document.getElementById('panel-title').innerText = d.name;
             document.getElementById('panel-content').innerHTML = `
-                <div style="display:flex; gap:15px; align-items:center; margin-bottom:20px;">
-                    <img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" style="width:75px; height:75px; border-radius:50%; object-fit:cover; border:2px solid var(--primary);">
-                    <div><h3 style="font-weight:900">${d.name}</h3><span style="color:var(--orange); font-weight:800; font-size:0.75rem;">Due: R${bal}</span></div>
+                <div style="display:flex; gap:15px; align-items:center; margin-bottom:25px;">
+                    <img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid var(--primary); background:var(--bg)">
+                    <div><h2 style="font-weight:800">${d.name}</h2><span style="color:var(--orange); font-weight:800; font-size:0.8rem">Balance: R${d.rev - totalP}</span></div>
                 </div>
-
-                <button class="btn btn-share" onclick="triggerInvoice(${d.id})">📂 GENERATE & SHARE INVOICE</button>
-
-                <div style="background:rgba(0,0,0,0.3); padding:15px; border-radius:12px; margin-top:20px; border-left:4px solid var(--primary);">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.8rem"><span>Plan Type:</span><b>${d.rev === 4000 ? 'RTO' : 'Cash'}</b></div>
-                    <div style="display:flex; justify-content:space-between; font-size:0.8rem"><span>Paid:</span><b class="rev-val">R${totalP}</b></div>
+                <button class="btn btn-invoice" onclick="genInv(${d.id})">📂 GENERATE & SEND PDF INVOICE</button>
+                <div style="background:rgba(0,0,0,0.3); padding:20px; border-radius:20px; border-left:4px solid var(--primary); margin:20px 0;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>Plan:</span><b>${d.rev === 4000 ? 'RTO' : 'Cash'}</b></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px;"><span>Paid:</span><b class="rev-val">R${totalP}</b></div>
+                    <button class="btn btn-primary" style="width:100%; font-size:0.8rem" onclick="addPay(${d.id})">+ Log Weekly R500</button>
                 </div>
-
-                <div style="margin-top:20px">${STAGES.map((s,i) => `<div style="padding:12px; border-radius:10px; margin-bottom:8px; border:1px solid ${i <= d.stage ? 'var(--primary)' : 'var(--border)'}; opacity:${i <= d.stage ? '1' : '0.2'}; background:${i === d.stage ? 'rgba(255,255,255,0.05)' : 'transparent'}; font-weight:600; font-size:0.85rem">STAGE ${i+1}: ${s.name}</div>`).join('')}</div>
-
-                <button class="btn btn-whatsapp" onclick="sendWA()">WhatsApp Message 📱</button>
-                <button class="btn" style="width:100%; border:1px solid var(--red); color:var(--red); font-size:0.75rem; margin-top:40px" onclick="deleteD(${d.id})">DELETE RECORDS</button>
+                <div style="margin-top:20px">${STAGES.map((s,i) => `<div style="padding:16px; border-radius:18px; margin-bottom:12px; border:1.5px solid ${i <= d.stage ? 'var(--primary)' : 'var(--border)'}; opacity:${i <= d.stage ? '1' : '0.25'}; background:${i === d.stage ? 'rgba(255,255,255,0.05)' : 'transparent'}; font-weight:600; font-size:0.95rem">STAGE ${i+1}: ${s.name}</div>`).join('')}</div>
+                <button class="btn btn-whatsapp" onclick="sendWA()">Open WhatsApp Notification 📱</button>
+                <button class="btn" style="width:100%; border:1px solid var(--red); color:var(--red); font-size:0.8rem; margin-top:40px" onclick="deleteD(${d.id})">PURGE RECORD</button>
             `;
-
             document.getElementById('panel-footer').innerHTML = `<button class="btn" style="flex:1; border:1px solid var(--border); color:var(--text)" onclick="move(-1)">BACK</button><button class="btn" style="flex:1; background:var(--blue); color:#fff" onclick="move(1)">NEXT</button><button class="btn btn-primary" style="flex:1" onclick="fin()">FINISH</button>`;
             document.getElementById('panel').classList.add('open');
         }
 
-        // --- REFRESH ENGINE (Logic preserved) ---
-        function move(v) { const i = drivers.findIndex(x=>x.id===activeId); let n = drivers[i].stage + v; if(n>=0 && n<STAGES.length) { drivers[i].stage=n; save(); openDriverPanel(activeId); refresh(); } }
+        function move(dir) { const i = drivers.findIndex(x=>x.id===activeId); let n = drivers[i].stage + dir; if(n>=0 && n<STAGES.length) { drivers[i].stage=n; save(); openDriverPanel(activeId); refresh(); } }
+        function addPay(id) { const i = drivers.findIndex(x=>x.id===id); drivers[i].payments.push({amount: 500}); save(); openDriverPanel(activeId); refresh(); }
         function fin() { const i = drivers.findIndex(x=>x.id===activeId); drivers[i].done=true; save(); closePanel(); refresh(); }
-        function deleteD(id) { if(confirm("Remove?")) { drivers=drivers.filter(x=>x.id!==id); save(); closePanel(); refresh(); } }
-        function sendWA() { const d=drivers.find(x=>x.id===activeId); let n=d.wa.replace(/\s+/g,''); if(n.startsWith('0')) n='27'+n.substring(1); const m=encodeURIComponent(STAGES[d.stage].msg.replace("[Name]", d.name)); window.open(`https://wa.me/${n}?text=${m}`,'_blank'); }
-        function addTask() { const t=document.getElementById('t-text').value, a=document.getElementById('t-assignee').value; if(!t||!a) return; tasks.push({id:Date.now(), name:t, who:a, logs:[]}); save(); refresh(); document.getElementById('t-text').value=''; document.getElementById('t-assignee').value=''; }
-        function switchView(v) { document.querySelectorAll('.view').forEach(c => c.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.getElementById(`view-${v}`).classList.add('active'); document.getElementById(`nav-${v}`).classList.add('active'); document.getElementById('view-title').innerText = v.toUpperCase(); document.getElementById('sidebar').classList.remove('mobile-open'); refresh(); }
-        function openModal(id) { if(id==='modal-add') updateDepositOptions("4000"); document.getElementById(id).style.display='flex'; }
+        function deleteD(id) { if(confirm("Permanently Purge?")) { drivers=drivers.filter(x=>x.id!==id); save(); closePanel(); refresh(); } }
+        function sendWA() { const d=drivers.find(x=>x.id===activeId); let n=d.wa.replace(/\s+/g,''); if(n.startsWith('0')) n='27'+n.substring(1); const m=encodeURIComponent(STAGES[d.stage].msg.replace("[Name]", d.name)); window.open(`https://wa.me/${n}?text=${m}`, '_blank'); }
+        function openModal(id) { if(id==='modal-add') updateDepOptions("4000"); document.getElementById(id).style.display='flex'; }
         function closeModal(id) { document.getElementById(id).style.display='none'; }
         function closePanel() { document.getElementById('panel').classList.remove('open'); }
-        function toggleRev() { document.querySelectorAll('.rev-val').forEach(v => v.classList.toggle('hidden')); }
-        function handlePhoto(input) { const reader = new FileReader(); reader.onload = (e) => { currentImg = e.target.result; document.getElementById('img-preview').src = currentImg; }; reader.readAsDataURL(input.files[0]); }
-        function updateDepositOptions(v) { const sel = document.getElementById('in-dep'); sel.innerHTML = v === "4000" ? '<option value="500">R500 Standard RTO</option>' : '<option value="1000">R1000 Cash Deposit</option><option value="1500">R1500 Full Cash Deposit</option>'; }
-        function saveDriver() { const d={ id:Date.now(), name:document.getElementById('in-name').value, wa:document.getElementById('in-wa').value, rev:parseInt(document.getElementById('in-deal').value), deposit:parseInt(document.getElementById('in-dep').value), payments:[], photo:currentImg, stage:0, done:false }; drivers.push(d); save(); closeModal('modal-add'); refresh(); }
-        function exportData() { prompt("Copy Data Key:", btoa(JSON.stringify({d:drivers,t:tasks}))); }
-        function importData() { const k=prompt("Paste Key:"); if(k) { try{ const o=JSON.parse(atob(k)); drivers=o.d; tasks=o.t; save(); location.reload(); }catch(e){alert("Error");}} }
+        function togglePrivacy() { document.querySelectorAll('.rev-val').forEach(v => v.classList.toggle('hidden')); }
+        function addTask() { const t=document.getElementById('t-text').value, a=document.getElementById('t-assignee').value; if(!t||!a) return; tasks.push({id:Date.now(), name:t, who:a}); save(); refresh(); document.getElementById('t-text').value=''; document.getElementById('t-assignee').value=''; }
+        function exportData() { prompt("Key:", btoa(JSON.stringify({d:drivers,t:tasks}))); }
+        function importData() { const k=prompt("Key:"); if(k) { try{ const o=JSON.parse(atob(k)); drivers=o.d; tasks=o.t; save(); location.reload(); }catch(e){}} }
+        function changeTheme(t) { document.body.className = t; }
 
         function refresh() {
-            const activeCount = drivers.filter(d => !d.done).length; const revTotal = drivers.reduce((a, b) => a + b.rev, 0);
-            document.getElementById('st-active').innerText = activeCount;
-            document.getElementById('st-rev').innerText = "R" + revTotal.toLocaleString();
+            document.getElementById('st-active').innerText = drivers.filter(d => !d.done).length;
+            document.getElementById('st-rev').innerText = "R" + drivers.reduce((a, b) => a + b.rev, 0).toLocaleString();
             if(document.getElementById('view-revenue').classList.contains('active')) {
-                document.getElementById('rev-total-big').innerText = "R" + revTotal.toLocaleString();
+                document.getElementById('rev-total-big').innerText = "R" + drivers.reduce((a, b) => a + b.rev, 0).toLocaleString();
                 document.getElementById('revenue-log').innerHTML = drivers.map(d => `<div class="card" onclick="openDriverPanel(${d.id})"><b style="flex:1">${d.name}</b><span class="rev-val" style="font-weight:800; color:var(--primary)">R${d.rev}</span></div>`).join('');
             }
-            document.getElementById('recent-list').innerHTML = drivers.slice(-8).reverse().map(d => `<div class="card" onclick="openDriverPanel(${d.id})"><img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="driver-img-sm"><div style="flex:1"><b>${d.name}</b><br><small style="color:var(--dim)">Currently: ${STAGES[d.stage].name}</small></div></div>`).join('');
-            document.getElementById('task-list').innerHTML = tasks.map(t => `<div class="card"><b>${t.name}</b><br><small style="color:var(--primary)">Responsible: ${t.who}</small></div>`).join('');
-            document.getElementById('pipe-area').innerHTML = STAGES.map((s,i) => `<div class="pipe-col"><div style="color:${s.color}; font-weight:800; margin-bottom:12px; border-bottom:2px solid var(--border); padding-bottom:8px; font-size:0.75rem; text-transform:uppercase;">${s.name}</div>${drivers.filter(d => d.stage === i && !d.done).map(d => `<div class="card" style="padding:10px; font-size:0.8rem;" onclick="openDriverPanel(${d.id})">${d.name}</div>`).join('')}</div>`).join('');
+            document.getElementById('recent-list').innerHTML = drivers.slice(-10).reverse().map(d => `<div class="card" onclick="openDriverPanel(${d.id})"><img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="driver-img-sm"><div style="flex:1"><b>${d.name}</b><br><small style="color:var(--dim)">At: ${STAGES[d.stage].name}</small></div></div>`).join('');
+            document.getElementById('task-list').innerHTML = tasks.map(t => `<div class="card" style="cursor:default"><b>${t.name}</b><br><small style="color:var(--primary)">Staff: ${t.who}</small></div>`).join('');
+            document.getElementById('pipe-area').innerHTML = STAGES.map((s,i) => `<div class="pipe-col"><div style="color:${s.color}; font-weight:800; margin-bottom:15px; font-size:0.75rem; text-transform:uppercase;">${s.name}</div>${drivers.filter(d => d.stage === i && !d.done).map(d => `<div class="card" style="padding:10px; font-size:0.8rem;" onclick="openDriverPanel(${d.id})">${d.name}</div>`).join('')}</div>`).join('');
         }
         window.onload = refresh;
     </script>
 </body>
-</html>
+            </html>
