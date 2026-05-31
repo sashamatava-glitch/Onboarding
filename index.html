@@ -3,27 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Onboarding Hub ZA | Corporate v24</title>
+    <title>Onboarding Hub ZA | Enterprise 25</title>
     
+    <!-- PWA / Apple Icons -->
     <meta name="theme-color" content="#0d0f14">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="logo.png">
 
-    <!-- Corporate Typography: Plus Jakarta Sans -->
+    <!-- Corporate Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
     
-    <!-- Professional PDF Generation Libraries -->
+    <!-- PDF Generation Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         :root {
             --bg: #0d0f14; --surface: #161a22; --border: #2a2f3d;
-            --text: #ffffff; --dim: #94a3b8;
+            --text: #ffffff; --dim: #a1a1aa;
             --primary: #00c896; --blue: #0094ff; --orange: #ff7c3e;
             --red: #ff4d6d; --whatsapp: #25d366;
             --sidebar-w: 280px;
@@ -31,60 +32,63 @@
         }
 
         body.theme-white { --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0; --text: #0f172a; --dim: #64748b; }
-        
+
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
         
-        /* SIDEBAR */
-        #sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; display: none; backdrop-filter: blur(4px); }
+        /* SIDEBAR (Improved Accessibility) */
+        #sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 999; display: none; backdrop-filter: blur(4px); }
         #sidebar-overlay.active { display: block; }
-        #sidebar { width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; transition: var(--transit); position: relative; }
-        .sidebar-brand { padding: 30px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 15px; cursor: pointer; }
-        .sidebar-brand img { width: 45px; height: 45px; border-radius: 50%; border: 2.5px solid var(--primary); object-fit: cover; }
-        .nav-item { padding: 14px 20px; cursor: pointer; color: var(--dim); border-radius: 14px; margin: 4px 14px; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
-        .nav-item:hover { background: rgba(255,255,255,0.03); color: #fff; }
+        
+        #sidebar { width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 1000; transition: var(--transit); }
+        .sidebar-brand { padding: 30px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .sidebar-brand img { width: 42px; height: 42px; border-radius: 50%; border: 2.5px solid var(--primary); object-fit: cover; }
+        
+        .nav-item { padding: 14px 20px; cursor: pointer; color: var(--dim); border-radius: 12px; margin: 4px 14px; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
         .nav-item.active { background: var(--primary); color: #000; font-weight: 800; box-shadow: 0 4px 15px rgba(0, 200, 150, 0.2); }
+        .sidebar-footer { margin-top: auto; padding: 20px; border-top: 1px solid var(--border); }
 
         /* MAIN CONTENT */
         #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         #topbar { height: 75px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; }
-        .view { padding: 25px; flex: 1; overflow-y: auto; display: none; animation: slideUp 0.4s ease; }
+        .view { padding: 25px; flex: 1; overflow-y: auto; display: none; animation: slideIn 0.4s ease; }
         .view.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* DASHBOARD CARDS */
+        /* STATS & CARDS */
         .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .stat-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 22px; border-radius: 24px; }
-        .stat-card h4 { font-size: 0.65rem; color: var(--dim); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px; }
-        .stat-card .val { font-size: 1.6rem; font-weight: 800; color: var(--primary); font-family: 'Syne'; }
+        .stat-card h4 { font-size: 0.65rem; color: var(--dim); text-transform: uppercase; letter-spacing: 1.5px; }
+        .stat-card .val { font-size: 1.8rem; font-weight: 800; color: var(--primary); font-family: 'Syne'; }
         
         .card { background: var(--surface); border: 1px solid var(--border); padding: 18px; border-radius: 20px; margin-bottom: 12px; cursor: pointer; display: flex; align-items: center; gap: 15px; transition: var(--transit); }
         .card:hover { border-color: var(--primary); transform: translateX(5px); }
         .driver-img-sm { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2.5px solid var(--border); background: #000; }
 
         /* INPUTS & BUTTONS */
-        .form-control { width: 100%; padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff; border-radius: 14px; margin-bottom: 12px; font-family: inherit; font-size: 1rem; outline: none; }
         .btn { padding: 14px 22px; border-radius: 14px; border: none; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-family: inherit; transition: 0.2s; font-size: 0.95rem; }
         .btn-primary { background: var(--primary); color: #000; width: 100%; }
         .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
-        .btn-whatsapp { background: var(--whatsapp); color: #fff; width: 100%; margin-top: 15px; }
-        .btn-danger { background: rgba(255, 77, 109, 0.1); color: var(--red); border: 1px solid var(--red); width: 100%; margin-top: 40px; }
+        .form-control { width: 100%; padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff; border-radius: 14px; margin-bottom: 12px; font-family: inherit; outline: none; }
+
+        /* FLOATING ACTION BUTTON (MOBILE) */
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: #000; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 10px 30px rgba(0, 200, 150, 0.4); z-index: 998; cursor: pointer; transition: 0.3s; }
+        .fab:active { transform: scale(0.9); }
+
+        /* INVOICE STYLING (Match Screenshot) */
+        .invoice-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
+        .invoice-paper { background: #ffffff; color: #000000; width: 100%; max-width: 650px; padding: 45px; border-radius: 2px; font-size: 14px; line-height: 1.5; position: relative; }
+        .inv-title { color: #00c896; font-size: 3rem; font-weight: 800; font-family: 'Syne'; margin: 0; letter-spacing: 2px; }
+        .inv-table { width: 100%; border-collapse: collapse; margin: 30px 0; }
+        .inv-table th { text-align: left; padding: 12px 0; border-bottom: 2px solid #eee; font-size: 11px; text-transform: uppercase; }
+        .inv-table td { padding: 15px 0; border-bottom: 1px solid #f9f9f9; }
+        .payment-instructions { margin-top: 40px; border-left: 5px solid #00c896; background: #fafafa; padding: 20px 25px; border-radius: 4px; }
 
         /* PANEL */
-        #panel { position: fixed; top: 0; right: -100%; width: 500px; height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 5000; transition: var(--transit); display: flex; flex-direction: column; }
+        #panel { position: fixed; top: 0; right: -100%; width: 500px; height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 5000; transition: var(--transit); display: flex; flex-direction: column; box-shadow: -20px 0 60px rgba(0,0,0,0.6); }
         #panel.open { right: 0; }
         .panel-content { padding: 30px; overflow-y: auto; flex: 1; }
         .panel-footer { padding: 25px; border-top: 1px solid var(--border); display: flex; gap: 12px; background: var(--surface); }
-
-        /* INVOICE DESIGN (Exact Match to Screenshot) */
-        .invoice-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px; overflow-y: auto; }
-        .invoice-paper { background: #ffffff; color: #000000; width: 100%; max-width: 650px; padding: 45px; border-radius: 2px; font-size: 14px; line-height: 1.4; position: relative; }
-        .inv-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; }
-        .inv-main-title { color: #00c896; font-size: 3rem; font-weight: 800; font-family: 'Syne'; margin: 0; text-transform: uppercase; line-height: 1; letter-spacing: 2px; }
-        .inv-table { width: 100%; border-collapse: collapse; margin: 30px 0; border-top: 1px solid #eee; }
-        .inv-table th { text-align: left; padding: 12px 0; font-weight: 700; border-bottom: 1px solid #eee; text-transform: uppercase; font-size: 11px; color: #333; }
-        .inv-table td { padding: 15px 0; border-bottom: 1px solid #f5f5f5; }
-        .payment-box { margin-top: 40px; border-left: 5px solid #00c896; background: #fafafa; padding: 20px 25px; border-radius: 4px; }
 
         .terms-box { background: #000; border: 1px solid var(--border); padding: 18px; border-radius: 16px; height: 200px; overflow-y: auto; font-size: 0.8rem; color: var(--dim); line-height: 1.7; margin-bottom: 20px; }
         .rev-val.hidden { filter: blur(12px); pointer-events: none; }
@@ -114,9 +118,8 @@
             <div id="nav-tasks" class="nav-item" onclick="switchView('tasks')">✅ Delegation Hub</div>
             <div id="nav-settings" class="nav-item" onclick="switchView('settings')">🎨 Settings & Sync</div>
         </div>
-        <div style="padding: 20px; border-top: 1px solid var(--border); text-align: center;">
-            <p style="font-size: 0.6rem; color: var(--dim);">Waardeer Holdings (Pty) Ltd</p>
-            <p style="font-size: 0.5rem; color: var(--dim);">Reg: 2024/160585/07</p>
+        <div class="sidebar-footer">
+            <button class="btn btn-primary" onclick="openModal('modal-add')">+ Assign New Driver</button>
         </div>
     </div>
 
@@ -129,49 +132,51 @@
             <div class="btn" style="border:1px solid var(--primary); color:var(--primary); font-size:0.75rem" onclick="togglePrivacy()">👁️ PRIVACY</div>
         </div>
 
-        <!-- DASHBOARD VIEW -->
         <div id="view-dashboard" class="view active">
             <div class="stat-grid">
-                <div class="stat-card"><h4>ACTIVE</h4><div class="val" id="stat-active">0</div></div>
-                <div class="stat-card"><h4>REVENUE</h4><div class="val rev-val" id="stat-rev">R0</div></div>
+                <div class="stat-card"><h4>ACTIVE FLEET</h4><div class="val" id="stat-active">0</div></div>
+                <div class="stat-card"><h4>CASH VALUE</h4><div class="val rev-val" id="stat-rev">R0</div></div>
             </div>
-            <h4 style="margin-bottom:15px; font-weight:700; color:var(--dim)">RECENT DRIVER ASSIGNMENTS</h4>
+            <h4 style="margin-bottom:15px; font-weight:700; color:var(--dim)">RECENT OPERATIONS</h4>
             <div id="recent-list"></div>
         </div>
 
         <div id="view-revenue" class="view">
-            <div class="stat-card" style="margin-bottom:25px; text-align:center;">
-                <h4>Company Total Projected Portfolio</h4>
-                <div class="val rev-val" id="rev-total-big" style="font-size:3rem;">R0</div>
+            <div class="stat-card" style="margin-bottom:25px; text-align:center; background: linear-gradient(135deg, var(--surface), var(--bg)); border: 2px solid var(--primary);">
+                <h4>Projected Company Revenue</h4>
+                <div class="val rev-val" id="rev-total-big" style="font-size:3.2rem; margin: 10px 0;">R0</div>
             </div>
-            <div id="revenue-log"></div>
+            <div id="revenue-log" style="margin-top:20px;"></div>
         </div>
 
         <div id="view-tasks" class="view">
             <div style="background:var(--surface); padding:20px; border-radius:18px; border:1px solid var(--border); margin-bottom:20px;">
-                <input type="text" id="t-text" class="form-control" placeholder="New Task...">
-                <input type="text" id="t-assignee" class="form-control" placeholder="Responsible Party...">
-                <button class="btn btn-primary" onclick="addTask()">Delegate mission</button>
+                <input type="text" id="t-text" class="form-control" placeholder="What needs doing?">
+                <input type="text" id="t-assignee" class="form-control" placeholder="Assignee (Who?)">
+                <button class="btn btn-primary" onclick="addTask()">Delegate Mission</button>
             </div>
             <div id="task-list"></div>
         </div>
 
         <div id="view-settings" class="view">
             <div class="stat-card">
-                <button class="btn btn-outline" style="width:100%; margin-bottom:10px;" onclick="exportData()">💾 Export Data Key</button>
-                <button class="btn btn-primary" onclick="importData()">📲 Import Data Key</button>
+                <button class="btn btn-outline" style="width:100%; margin-bottom:10px;" onclick="exportData()">💾 Export Key</button>
+                <button class="btn btn-primary" onclick="importData()">📲 Import Key</button>
             </div>
-            <h4 style="margin-top:20px">Theme</h4>
+            <h4 style="margin-top:25px">Theme</h4>
             <select class="form-control" onchange="document.body.className = this.value">
-                <option value="theme-default">Dark Standard</option>
-                <option value="theme-white">Pro White</option>
+                <option value="theme-default">Corporate Dark</option>
+                <option value="theme-white">Soft White</option>
             </select>
         </div>
 
         <div id="view-pipeline" class="view"><div class="pipe-row" id="pipe-area" style="display:flex; gap:15px; overflow-x:auto; padding-bottom:30px"></div></div>
     </div>
 
-    <!-- DETAIL SLIDE PANEL -->
+    <!-- QUICK ACCESS FAB -->
+    <div class="fab" onclick="openModal('modal-add')">+</div>
+
+    <!-- DETAIL PANEL -->
     <div id="panel">
         <div class="panel-header">
             <h3 id="panel-title" style="font-weight:800;">Identity Detail</h3>
@@ -186,22 +191,22 @@
         <div id="invoice-render" class="invoice-sheet">
             <div class="inv-top">
                 <div style="max-width:60%">
-                    <img src="logo.png" style="width:85px; border-radius:50%; margin-bottom:15px" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1162/1162456.png'">
-                    <h2 style="font-weight:800; font-size:1.6rem; letter-spacing:-1px;">Waardeer Holdings (Pty) Ltd</h2>
+                    <img src="logo.png" style="width:80px; border-radius:50%; margin-bottom:15px" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1162/1162456.png'">
+                    <h2 style="font-weight:800; font-size:1.5rem; letter-spacing:-1px;">Waardeer Holdings (Pty) Ltd</h2>
                     <p style="font-size:0.75rem; color:#666">Registration No: 2024/160585/07</p>
                     <p style="font-size:0.75rem; color:#666">Pretoria, South Africa</p>
                 </div>
                 <div style="text-align: right">
-                    <h1 class="inv-main-title">INVOICE</h1>
-                    <p id="inv-no" style="font-weight:700; margin-top:10px; font-size:0.9rem">#INV-0000</p>
-                    <p id="inv-date" style="color:#666; font-size:0.8rem">Issued: 00/00/0000</p>
+                    <h1 class="inv-title">INVOICE</h1>
+                    <p id="inv-no" style="font-weight:700; margin-top:10px;">#INV-0000</p>
+                    <p id="inv-date" style="color:#666">Issued: 00/00/0000</p>
                 </div>
             </div>
 
             <div style="margin:40px 0;">
                 <p style="color:#999; font-weight:700; font-size:0.65rem; text-transform:uppercase; margin-bottom:5px">Bill to Client:</p>
-                <h3 id="inv-name" style="font-weight:800; font-size: 1.4rem;">Sasha Matava</h3>
-                <p id="inv-wa" style="color:#444">063 068 5900</p>
+                <h3 id="inv-name" style="font-weight:800; font-size: 1.4rem;">Customer Name</h3>
+                <p id="inv-wa" style="color:#444">WhatsApp Contact</p>
             </div>
 
             <table class="inv-table">
@@ -215,22 +220,22 @@
                     <tr>
                         <td>
                             <b style="font-size:0.9rem;">Uber Eats Driver Onboarding Hub</b><br>
-                            <span id="inv-package-detail" style="color:#666; font-size:0.75rem">Service Plan: Arrangement</span>
+                            <span id="inv-package" style="color:#666; font-size:0.75rem">Arrangement Type</span>
                         </td>
-                        <td id="inv-sub" style="text-align:right; font-weight:700; font-size:1rem">R0.00</td>
+                        <td id="inv-total-val" style="text-align:right; font-weight:700; font-size:1rem">R0.00</td>
                     </tr>
                     <tr>
                         <td style="text-align:right; color:#666; border:none; padding-top:20px;">Deposit Payment (Received):</td>
-                        <td id="inv-dep" style="text-align:right; font-weight:700; color:#ff7c3e; border:none; padding-top:20px;">- R0.00</td>
+                        <td id="inv-deposit-val" style="text-align:right; font-weight:700; color:#ff7c3e; border:none; padding-top:20px;">- R0.00</td>
                     </tr>
                     <tr>
                         <td style="text-align:right; border:none; padding-top:20px;"><b style="font-size:0.9rem">GRAND TOTAL BALANCE DUE:</b></td>
-                        <td id="inv-bal" style="text-align:right; font-weight:800; font-size:1.4rem; color:#00c896; border:none; padding-top:20px;">R0.00</td>
+                        <td id="inv-balance-val" style="text-align:right; font-weight:800; font-size:1.4rem; color:#00c896; border:none; padding-top:20px;">R0.00</td>
                     </tr>
                 </tbody>
             </table>
 
-            <div class="payment-box">
+            <div class="payment-instructions">
                 <p style="font-weight:800; font-size:0.8rem; margin-bottom:10px">ELECTRONIC PAYMENT INSTRUCTIONS:</p>
                 <p style="margin-bottom:3px">Bank: <b>FNB / First National Bank</b></p>
                 <p style="margin-bottom:3px">Account Name: <b>Waardeer Holdings</b></p>
@@ -247,16 +252,16 @@
 
     <!-- MODAL: ADD DRIVER -->
     <div id="modal-add" style="position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:9000; display:none; align-items:center; justify-content:center; padding:20px;">
-        <div style="background:var(--surface); width:100%; max-width:500px; border-radius:28px; padding:35px; border:1px solid var(--border); max-height:92vh; overflow-y:auto;">
-            <h2 style="margin-bottom:25px; font-weight:800; letter-spacing:-1px">Assign New Driver</h2>
+        <div style="background:var(--surface); width:100%; max-width:550px; border-radius:28px; padding:35px; border:1px solid var(--border); max-height:95vh; overflow-y:auto;">
+            <h2 style="margin-bottom:25px; font-weight:800;">Onboard Driver</h2>
             <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:20px;">
                 <img id="img-preview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3.5px solid var(--primary); padding:3px; background:var(--bg)">
                 <input type="file" id="in-photo" accept="image/*" style="display:none;" onchange="handlePhoto(this)">
-                <button class="btn" style="color:var(--primary); font-size:0.75rem; margin-top:10px" onclick="document.getElementById('in-photo').click()">📸 Set Identity Image</button>
+                <button class="btn" style="color:var(--primary); font-size:0.75rem; margin-top:10px" onclick="document.getElementById('in-photo').click()">📸 Set Identity Photo</button>
             </div>
-            <input type="text" id="in-name" class="form-control" placeholder="Full Legal Name">
-            <input type="tel" id="in-wa" class="form-control" placeholder="WhatsApp (082...)">
-            <label style="font-size:0.7rem; color:var(--dim); margin-bottom:5px; display:block">Select Business Deal</label>
+            <input type="text" id="in-name" class="form-control" placeholder="Full Name">
+            <input type="tel" id="in-wa" class="form-control" placeholder="WhatsApp (e.g. 082...)">
+            <label style="font-size:0.7rem; color:var(--dim); margin-bottom:5px; display:block">Financial Plan</label>
             <select id="in-deal" class="form-control" onchange="updateDepOptions(this.value)">
                 <option value="4000">Rent-to-Own Deal (R4,000 Total)</option>
                 <option value="2500">Cash Purchase Deal (R2,500 Total)</option>
@@ -266,17 +271,14 @@
 
             <div class="terms-box">
                 <b>FULL TERMS & CONDITIONS - WAARDEER HOLDINGS (PTY) LTD (ONBOARDING HUB ZA)</b><br><br>
-                1. INTRODUCTION: Agree to Terms by communicating via WhatsApp, email or forms.<br><br>
-                2. NATURE: Assistance for Uber Eats onboarding. Not affiliated with Uber.<br><br>
-                3. CLIENT CONSENT: Recognize Waardeer Holdings as the service provider.<br><br>
-                4. RESPONSIBILITY: Confirm accuracy of provided documents.<br><br>
-                5. PAYMENTS: 80% non-refundable once onboarding starts.<br><br>
-                6. NO GUARANTEE: Approval is decided by third-party platform.<br><br>
-                7. POPIA: Driver consents to collection for KYC purposes under POPIA laws.<br><br>
-                ✅ BY TICKING, YOU FULLY AGREE TO THESE TERMS.
+                1. INTRODUCTION: Agree to terms by communicating with us.<br>
+                2. NATURE: Assistance for Uber Eats onboarding. Not affiliated with Uber.<br>
+                3. PAYMENTS: 80% non-refundable once onboarding starts.<br>
+                4. POPIA: Driver data used for KYC/onboarding purposes only.<br><br>
+                ✅ BY TICKING, YOU FULLY AGREE.
             </div>
-            <label style="display:flex; gap:12px; font-size:0.8rem; margin-bottom:25px; cursor:pointer;">
-                <input type="checkbox" id="in-fica" onchange="document.getElementById('btn-save').disabled = !this.checked" style="width:24px; height:24px; flex-shrink:0;"> I Confirm Driver Acceptance of Terms.
+            <label style="display:flex; gap:12px; font-size:0.8rem; margin-bottom:25px; line-height:1.5; cursor:pointer;">
+                <input type="checkbox" id="in-fica" onchange="document.getElementById('btn-save').disabled = !this.checked" style="width:24px; height:24px; flex-shrink: 0"> Driver agrees to all Terms.
             </label>
             <div style="display:flex; gap:10px;">
                 <button class="btn btn-outline" style="flex:1" onclick="closeModal('modal-add')">CANCEL</button>
@@ -296,98 +298,91 @@
             { name: "ACTIVE", color: "#00c896", msg: "Hi [Name], congratulations!\n\nYour account is officially ACTIVE! Time to go online, accept trips, and start earning. Drive safely out there! 🎉\n\nOnboardingHub ZA\n(Waardeer Holdings)" }
         ];
 
-        let drivers = JSON.parse(localStorage.getItem('oh_za_master_db')) || [];
-        let tasks = JSON.parse(localStorage.getItem('oh_za_master_tasks')) || [];
+        let drivers = JSON.parse(localStorage.getItem('oh_za_v25_drivers')) || [];
+        let tasks = JSON.parse(localStorage.getItem('oh_za_v25_tasks')) || [];
         let currentPhoto = null; let activeId = null;
 
-        function save() { localStorage.setItem('oh_za_master_db', JSON.stringify(drivers)); localStorage.setItem('oh_za_master_tasks', JSON.stringify(tasks)); }
+        function save() { localStorage.setItem('oh_za_v25_drivers', JSON.stringify(drivers)); localStorage.setItem('oh_za_v25_tasks', JSON.stringify(tasks)); }
 
         async function sharePDF() {
             const d = drivers.find(x => x.id === activeId);
             const sheet = document.querySelector("#invoice-render");
-            const canvas = await html2canvas(sheet, { scale: 3, useCORS: true });
-            const imgData = canvas.toDataURL("image/jpeg", 1.0);
+            const canvas = await html2canvas(sheet, { scale: 3 });
+            const imgData = canvas.toDataURL("image/jpeg", 0.95);
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
             doc.addImage(imgData, 'JPEG', 0, 0, 210, (canvas.height * 210) / canvas.width);
             const blob = doc.output('blob');
             const file = new File([blob], `Invoice_${d.name}.pdf`, { type: 'application/pdf' });
-            if (navigator.share) { await navigator.share({ files: [file], title: 'Waardeer Invoice', text: `Here is your invoice, ${d.name}` }); }
-            else { doc.save(`Invoice_${d.name}.pdf`); alert("PDF Saved to device."); }
+            if (navigator.share) await navigator.share({ files: [file], title: 'Invoice', text: `Here is the invoice for ${d.name}` });
+            else doc.save(`Invoice_${d.name}.pdf`);
         }
 
         function triggerInv(id) {
             const d = drivers.find(x => x.id === id);
             document.getElementById('inv-no').innerText = `#INV-${d.id.toString().slice(-4)}`;
-            document.getElementById('inv-date').innerText = `Issued: ${new Date().toLocaleDateString()}`;
+            document.getElementById('inv-date').innerText = new Date().toLocaleDateString();
             document.getElementById('inv-name').innerText = d.name;
             document.getElementById('inv-wa').innerText = d.wa;
-            document.getElementById('inv-package-detail').innerText = d.rev === 4000 ? "Service Plan: Rent-to-Own Arrangement" : "Service Plan: Cash Purchase Agreement";
-            document.getElementById('inv-sub').innerText = `R${d.rev.toLocaleString()}`;
-            document.getElementById('inv-dep').innerText = `- R${d.deposit.toLocaleString()}`;
-            document.getElementById('inv-bal').innerText = `R${(d.rev - d.deposit).toLocaleString()}`;
+            document.getElementById('inv-package').innerText = d.rev === 4000 ? 'Service Plan: Rent-to-Own Arrangement' : 'Service Plan: Cash Purchase Agreement';
+            document.getElementById('inv-total-val').innerText = `R${d.rev.toLocaleString()}.00`;
+            document.getElementById('inv-deposit-val').innerText = `- R${d.deposit.toLocaleString()}.00`;
+            document.getElementById('inv-balance-val').innerText = `R${(d.rev - d.deposit).toLocaleString()}.00`;
             openModal('modal-invoice');
         }
 
         function openDriverPanel(id) {
             activeId = id; const d = drivers.find(x => x.id === activeId);
-            const totalPaid = (d.deposit || 0) + (d.payments || []).reduce((a,b) => a+b.amount, 0);
-            const balance = d.rev - totalPaid;
-
+            const paid = (d.deposit || 0) + (d.payments || []).reduce((a,b) => a+b.amount, 0);
             document.getElementById('panel-title').innerText = d.name;
             document.getElementById('panel-content').innerHTML = `
-                <div style="display:flex; gap:18px; align-items:center; margin-bottom:25px;">
-                    <img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid var(--primary); padding:4px; background:var(--bg)">
-                    <div><h3 style="font-weight:800">${d.name}</h3><span style="color:var(--orange); font-weight:800; background:rgba(255,124,62,0.1); padding:4px 10px; border-radius:8px; font-size:0.75rem;">Due: R${balance}</span></div>
+                <div style="display:flex; gap:15px; align-items:center; margin-bottom:25px;">
+                    <img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid var(--primary); background:var(--bg)">
+                    <div><h2 style="font-weight:800">${d.name}</h2><span style="color:var(--orange); font-weight:800; font-size:0.8rem">Balance: R${d.rev - paid}</span></div>
                 </div>
                 <button class="btn btn-primary" style="background:var(--blue); color:#fff; width:100%" onclick="triggerInv(${d.id})">📂 GENERATE & SHARE INVOICE</button>
-                <div style="background:rgba(0,0,0,0.4); padding:20px; border-radius:20px; border-left:4px solid var(--primary); margin:20px 0;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>Deal Type:</span><b>${d.rev === 4000 ? 'Rent-to-Own' : 'Cash Deal'}</b></div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:15px;"><span>Paid:</span><b class="rev-val">R${totalPaid}</b></div>
+                <div style="background:rgba(0,0,0,0.3); padding:20px; border-radius:20px; border-left:4px solid var(--primary); margin:20px 0;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>Plan:</span><b>${d.rev === 4000 ? 'RTO' : 'Cash'}</b></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px;"><span>Paid:</span><b class="rev-val">R${paid}</b></div>
                     <button class="btn btn-primary" style="width:100%; font-size:0.8rem" onclick="addPay(${d.id})">+ Log Weekly R500</button>
                 </div>
-                <div style="margin-top:20px">${STAGES.map((s,i) => `<div style="padding:15px; border-radius:16px; margin-bottom:10px; border:1px solid ${i <= d.stage ? 'var(--primary)' : 'var(--border)'}; opacity:${i <= d.stage ? '1' : '0.2'}; background:${i === d.stage ? 'rgba(255,255,255,0.05)' : 'transparent'}; font-weight:600; font-size:0.9rem">STAGE ${i+1}: ${s.name}</div>`).join('')}</div>
-                <button class="btn btn-whatsapp" onclick="sendWA()">Open WhatsApp Notification 📱</button>
-                <button class="btn" style="width:100%; border:1.5px solid var(--red); color:var(--red); font-size:0.75rem; margin-top:40px" onclick="purgeD(${d.id})">PURGE RECORD</button>
+                <div style="margin-top:20px">${STAGES.map((s,i) => `<div style="padding:16px; border-radius:18px; margin-bottom:12px; border:1px solid ${i <= d.stage ? 'var(--primary)' : 'var(--border)'}; opacity:${i <= d.stage ? '1' : '0.25'}; background:${i === d.stage ? 'rgba(255,255,255,0.05)' : 'transparent'}; font-weight:600; font-size:0.95rem">STAGE ${i+1}: ${s.name}</div>`).join('')}</div>
+                <button class="btn btn-whatsapp" onclick="sendWA()">WhatsApp Client Notification 📱</button>
+                <button class="btn" style="width:100%; border:1px solid var(--red); color:var(--red); font-size:0.8rem; margin-top:40px" onclick="purgeD(${d.id})">PURGE RECORD</button>
             `;
-
-            document.getElementById('panel-footer').innerHTML = `
-                <button class="btn" style="flex:1; border:1.5px solid var(--border); color:var(--text)" onclick="step(-1)">PREVIOUS</button>
-                <button class="btn" style="flex:1; background:var(--blue); color:#fff" onclick="step(1)">NEXT</button>
-                <button class="btn btn-primary" style="flex:1.5" onclick="comp()">COMPLETE</button>
-            `;
+            document.getElementById('panel-footer').innerHTML = `<button class="btn" style="flex:1; border:1px solid var(--border); color:var(--text)" onclick="step(-1)">BACK</button><button class="btn" style="flex:1; background:var(--blue); color:#fff" onclick="step(1)">NEXT</button><button class="btn btn-primary" style="flex:1" onclick="comp()">COMPLETE</button>`;
             document.getElementById('panel').classList.add('open');
         }
 
-        // Standard Navigation & logic helpers
+        // Logic & Navigation
+        function updateDepOptions(v) { document.getElementById('in-dep').innerHTML = v === "4000" ? '<option value="500">R500 Standard RTO</option>' : '<option value="1000">R1000 Cash Deposit</option><option value="1500">R1500 Full Deposit</option>'; }
+        function handlePhoto(i) { const r = new FileReader(); r.onload = (e) => { currentPhoto = e.target.result; document.getElementById('img-preview').src = currentPhoto; }; r.readAsDataURL(i.files[0]); }
+        function saveDriver() { drivers.push({ id: Date.now(), name: document.getElementById('in-name').value, wa: document.getElementById('in-wa').value, rev: parseInt(document.getElementById('in-deal').value), deposit: parseInt(document.getElementById('in-dep').value), payments: [], photo: currentPhoto, stage: 0, done: false }); save(); closeModal('modal-add'); refresh(); }
         function step(v) { const i = drivers.findIndex(x=>x.id===activeId); let n = drivers[i].stage + v; if(n>=0 && n<STAGES.length) { drivers[i].stage=n; save(); openDriverPanel(activeId); refresh(); } }
-        function addPay(id) { const i = drivers.findIndex(x=>x.id===id); drivers[i].payments.push({amount: 500}); save(); openDriverPanel(activeId); refresh(); }
-        function comp() { const i = drivers.findIndex(x=>x.id===activeId); drivers[i].done=true; save(); closePanel(); refresh(); }
-        function purgeD(id) { if(confirm("Delete permanently?")) { drivers=drivers.filter(x=>x.id!==id); save(); closePanel(); refresh(); } }
+        function addPay(id) { const i = drivers.findIndex(x=>x.id===id); drivers[i].payments.push({amount: 500}); save(); openDriverPanel(id); refresh(); }
+        function purgeD(id) { if(confirm("Remove profile?")) { drivers=drivers.filter(x=>x.id!==id); save(); closePanel(); refresh(); } }
         function sendWA() { const d=drivers.find(x=>x.id===activeId); let n=d.wa.replace(/\s+/g,''); if(n.startsWith('0')) n='27'+n.substring(1); const m=encodeURIComponent(STAGES[d.stage].msg.replace("[Name]", d.name)); window.open(`https://wa.me/${n}?text=${m}`,'_blank'); }
+        function comp() { const i = drivers.findIndex(x=>x.id===activeId); drivers[i].done=true; save(); closePanel(); refresh(); }
         function addTask() { const t=document.getElementById('t-text').value, a=document.getElementById('t-assignee').value; if(!t||!a) return; tasks.push({id:Date.now(), name:t, who:a}); save(); refresh(); document.getElementById('t-text').value=''; document.getElementById('t-assignee').value=''; }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('mobile-open'); document.getElementById('sidebar-overlay').classList.toggle('active'); }
         function openModal(id) { if(id==='modal-add') updateDepOptions("4000"); document.getElementById(id).style.display='flex'; }
         function closeModal(id) { document.getElementById(id).style.display='none'; }
         function closePanel() { document.getElementById('panel').classList.remove('open'); }
         function togglePrivacy() { document.querySelectorAll('.rev-val').forEach(v => v.classList.toggle('hidden')); }
-        function handlePhoto(i) { const r = new FileReader(); r.onload = (e) => { currentPhoto = e.target.result; document.getElementById('img-preview').src = currentPhoto; }; r.readAsDataURL(i.files[0]); }
-        function updateDepOptions(v) { document.getElementById('in-dep').innerHTML = v === "4000" ? '<option value="500">R500 Standard RTO</option>' : '<option value="1000">R1000 Cash Deposit</option><option value="1500">R1500 Advanced Cash Deposit</option>'; }
-        function saveDriver() { drivers.push({ id: Date.now(), name: document.getElementById('in-name').value, wa: document.getElementById('in-wa').value, rev: parseInt(document.getElementById('in-deal').value), deposit: parseInt(document.getElementById('in-dep').value), payments: [], photo: currentPhoto, stage: 0, done: false }); save(); closeModal('modal-add'); refresh(); }
-        function exportData() { prompt("Office Sync Key (COPY):", btoa(JSON.stringify({d:drivers,t:tasks}))); }
-        function importData() { const k=prompt("Paste Key:"); if(k) { try{ const o=JSON.parse(atob(k)); drivers=o.d; tasks=o.t; save(); location.reload(); }catch(e){}} }
         function switchView(v) { document.querySelectorAll('.view').forEach(c => c.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); document.getElementById(`view-${v}`).classList.add('active'); const n = document.getElementById(`nav-${v}`); if(n) n.classList.add('active'); document.getElementById('view-title').innerText = v.toUpperCase(); if(window.innerWidth < 850 && document.getElementById('sidebar').classList.contains('mobile-open')) toggleSidebar(); refresh(); }
+        function exportData() { prompt("Copy Key:", btoa(JSON.stringify({d:drivers,t:tasks}))); }
+        function importData() { const k=prompt("Paste Key:"); if(k) { try{ const o=JSON.parse(atob(k)); drivers=o.d; tasks=o.t; save(); location.reload(); }catch(e){}} }
 
         function refresh() {
-            document.getElementById('st-active').innerText = drivers.filter(d => !d.done).length;
-            document.getElementById('st-rev').innerText = "R" + drivers.reduce((a, b) => a + b.rev, 0).toLocaleString();
+            document.getElementById('stat-active').innerText = drivers.filter(d => !d.done).length;
+            document.getElementById('stat-rev').innerText = "R" + drivers.reduce((a, b) => a + b.rev, 0).toLocaleString();
             if(document.getElementById('view-revenue').classList.contains('active')) {
                 document.getElementById('rev-total-big').innerText = "R" + drivers.reduce((a, b) => a + b.rev, 0).toLocaleString();
                 document.getElementById('revenue-log').innerHTML = drivers.map(d => `<div class="card" onclick="openDriverPanel(${d.id})"><b style="flex:1">${d.name}</b><span class="rev-val" style="font-weight:800; color:var(--primary)">R${d.rev}</span></div>`).join('');
             }
-            document.getElementById('recent-list').innerHTML = drivers.slice(-8).reverse().map(d => `<div class="card" onclick="openDriverPanel(${d.id})"><img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="driver-img-sm"><div style="flex:1"><b>${d.name}</b><br><small style="color:var(--dim)">${STAGES[d.stage].name}</small></div></div>`).join('');
-            document.getElementById('task-list').innerHTML = tasks.map(t => `<div class="card" style="cursor:default"><b>${t.name}</b><br><small style="color:var(--primary)">Responsible: ${t.who}</small></div>`).join('');
-            document.getElementById('pipe-area').innerHTML = STAGES.map((s,i) => `<div class="pipe-col"><div style="color:${s.color}; font-weight:800; margin-bottom:15px; border-bottom:2px solid var(--border); padding-bottom:10px; font-size:0.75rem; text-transform:uppercase;">${s.name}</div>${drivers.filter(d => d.stage === i && !d.done).map(d => `<div class="card" style="padding:10px; font-size:0.8rem;" onclick="openDriverPanel(${d.id})">${d.name}</div>`).join('')}</div>`).join('');
+            document.getElementById('recent-list').innerHTML = drivers.slice(-8).reverse().map(d => `<div class="card" onclick="openDriverPanel(${d.id})"><img src="${d.photo || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}" class="driver-img-sm"><div style="flex:1"><b>${d.name}</b><br><small style="color:var(--dim)">Current Stage: ${STAGES[d.stage].name}</small></div></div>`).join('');
+            document.getElementById('task-list').innerHTML = tasks.map(t => `<div class="card" style="cursor:default"><b>${t.name}</b><br><small style="color:var(--primary)">Staff: ${t.who}</small></div>`).join('');
+            document.getElementById('pipe-area').innerHTML = STAGES.map((s,i) => `<div class="pipe-col"><div style="color:${s.color}; font-weight:800; margin-bottom:12px; border-bottom:2px solid var(--border); padding-bottom:10px; font-size:0.75rem; text-transform:uppercase;">${s.name}</div>${drivers.filter(d => d.stage === i && !d.done).map(d => `<div class="card" style="padding:10px; font-size:0.8rem;" onclick="openDriverPanel(${d.id})">${d.name}</div>`).join('')}</div>`).join('');
         }
         window.onload = refresh;
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('sw.js')); }
