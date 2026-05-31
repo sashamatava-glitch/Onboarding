@@ -1,4 +1,5 @@
-const CACHE_NAME = 'oh-za-v20';
+// Version 22.0 - Logo Update
+const CACHE_NAME = 'oh-za-v22';
 
 const assets = [
   './',
@@ -19,9 +20,8 @@ self.addEventListener('activate', (e) => {
     caches.keys().then((keys) => {
       return Promise.all(keys.map((key) => {
         if (key !== CACHE_NAME) return caches.delete(key);
-      }));
-    }).then(() => self.clients.claim())
-  );
+      })));
+  }).then(() => self.clients.claim());
 });
 
 self.addEventListener('fetch', (e) => {
