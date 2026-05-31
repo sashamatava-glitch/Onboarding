@@ -1,4 +1,4 @@
-const CACHE_NAME = 'oh-za-v18';
+const CACHE_NAME = 'oh-za-v19';
 
 const assets = [
   './',
