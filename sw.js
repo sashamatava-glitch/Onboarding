@@ -1,4 +1,4 @@
-const CACHE_NAME = 'oh-za-v23';
+const CACHE_NAME = 'oh-za-v24';
 
 const assets = [
   './',
@@ -25,5 +25,6 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
+  if (e.request.url.includes('cloudflare') || e.request.url.includes('gstatic')) return;
   e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
 });
