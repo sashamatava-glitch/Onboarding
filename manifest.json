@@ -1,7 +1,6 @@
 {
   "name": "Onboarding Hub ZA",
   "short_name": "Hub ZA",
-  "description": "Waardeer Holdings Driver Management System",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0d0f14",
