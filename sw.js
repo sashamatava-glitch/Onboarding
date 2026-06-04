@@ -1,4 +1,4 @@
-const CACHE_NAME = 'oh-za-v31';
+const CACHE_NAME = 'oh-za-v32';
 const assets = ['./', './index.html', './manifest.json', './logo.png'];
 
 self.addEventListener('install', (e) => {
