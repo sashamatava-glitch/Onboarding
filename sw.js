@@ -1,4 +1,4 @@
-const CACHE_NAME = 'oh-za-v29';
+const CACHE_NAME = 'oh-za-v30';
 const assets = ['./', './index.html', './manifest.json', './logo.png'];
 
 self.addEventListener('install', (e) => {
@@ -13,7 +13,6 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // Pass-through for cloud libraries and sounds
   if (e.request.url.includes('soundjay') || e.request.url.includes('cloudflare')) return fetch(e.request);
   e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
 });
